@@ -1,4 +1,4 @@
-.marquee.large:not(.split, .compact) .foreground.container .text {
+.marquee.large:not(.split, .compact, .quiet) .foreground.container .text {
   margin: var(--spacing-m) auto;
   width: var(--grid-container-width);
 }
@@ -9,7 +9,7 @@
   gap:0;
 }
 
-.marquee.large .icon-area.icon-area-multiple img {
+.marquee.large .icon-area.icon-area-multiple > :not(:last-child) img {
   max-height: none;
   margin: 0 var(--spacing-s) 0 0;
 }
@@ -25,6 +25,76 @@
 .marquee.large:not(.split) .body-xl .icon {
   margin: var(--spacing-xs) var(--spacing-xs) var(--spacing-xs) 0;
 }
+
+/* Drashti code -  QUIET MARQUEE */
+.marquee.quiet .icon-area {
+  margin-bottom: 40px;
+}
+
+.marquee.quiet .text{
+   padding: 0;
+   margin: 48px 0;
+}
+
+.marquee.quiet.center.large .icon-area {
+  justify-content: center;
+}
+
+.marquee.quiet.center .icon-area img{
+  margin: auto;
+}
+
+.marquee.quiet.center.large .supplemental-text {
+  font-size: var(--type-body-s-size);
+  line-height: var(--type-body-s-lh);
+}
+
+.marquee.quiet.fixed {
+  height: 491px;
+}
+
+.marquee.quiet.fixed .icon-area {
+  justify-content: center;
+}
+
+.marquee.quiet .text .heading-xl {
+  font-size: var(--type-heading-xxl-size);
+  line-height: var(--type-heading-xxl-lh);
+  margin-bottom: var(--spacing-s);
+}
+
+.marquee.quiet .supplemental-text img {
+  margin-top: var(--spacing-xl);
+}
+
+/* dropdown */
+.dropdown-area {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  position: relative;
+  background-color: #f9f9f9;
+  border: 1px solid #ccc;
+  cursor: pointer;
+}
+
+/* Style the list items */
+ul li {
+  padding: 8px;
+}
+
+/* Hide the list items by default */
+ul li:not(:first-child) {
+  display: none;
+}
+
+/* EOC - */
 
 .marquee {
   position: relative;
@@ -177,6 +247,7 @@
 
 .marquee.large.dark {
   background-color: black;
+  color: #FFF;
 }
 
 .marquee.large .text {
@@ -271,7 +342,7 @@
   max-width: 114px;
 }
 
-.marquee:not(.split) .icon-area.icon-area-multiple > :not(:first-child) img {
+.marquee:not(.split, .quiet) .icon-area.icon-area-multiple > :not(:first-child) img {
   margin-left: var(--spacing-xxs);
 }
 
@@ -336,13 +407,17 @@
     margin: 0;
   }
 
-  .marquee.quiet .foreground .text {
-    max-width: 600px;
-  }
+  
 
   .marquee.center .foreground .text,
   .marquee.centered .foreground .text {
     margin: 0 auto;
+  }
+
+  .marquee.quiet .foreground .text {
+    max-width: 600px;
+    padding: 0;
+    margin: 48px 0;
   }
   
   .marquee.split .foreground.container .text {
@@ -411,6 +486,11 @@
   .marquee.large:not(.split) .text .supplemental-text {
     margin-bottom: var(--spacing-xs);
   }
+
+  /* .marquee.quiet .text{
+    padding: 0;
+    margin: 48px 0;
+ }  */
 }
 
 @media screen and (min-width: 1200px) {
@@ -509,7 +589,7 @@
   /* standard = 560px height 
      compact = 360px height */
 
-  .marquee.large:not(.compact) .foreground.container .text {
+  .marquee.large:not(.compact, .quiet) .foreground.container .text {
       margin: var(--spacing-xl) 0;
   }
 
@@ -519,7 +599,7 @@
     gap: 100px;
   }
 
-  .marquee.large:not(.split) .text .heading-xxl {
+  .marquee.large:not(.split, .quiet) .text .heading-xxl {
     margin-bottom: var(--spacing-xs);
   }
 
