@@ -8,6 +8,14 @@
   min-height: 560px;
 }
 
+.marquee.interactive .foreground .show {
+  display: block;
+  width: 90%;
+  position: relative;
+  left: 235px;
+  bottom: 0px;
+}
+
 .marquee.small, .marquee.quiet, .marquee.inline, .marquee.large.compact {
   min-height: 360px;
 }

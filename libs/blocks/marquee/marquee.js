@@ -168,6 +168,7 @@ export default function init(el) {
     function handleClick(index) {
       hoverPictures[index].style.display = 'none';
       pictures[(index+1) % pictures.length].style.display = 'block';
+      pictures[(index+1) % pictures.length].classList.add('show');
     };
 
     hoverPictures.forEach((picture, index) => {
@@ -177,6 +178,7 @@ export default function init(el) {
     function hover(picture1, picture2) {
       picture1.style.display = 'none';
       picture2.style.display = 'block';
+      picture2.classList.add('show');
       if (picture2.style.display === 'block') {
         picture2.onmouseleave = function (e) {hoverOut(e);}
       }
@@ -186,6 +188,7 @@ export default function init(el) {
       if (e.target.style.display !== 'none') {
         e.target.style.display = 'none';
         e.target.previousElementSibling.style.display = 'block';
+        e.target.previousElementSibling.classList.add('show');
       }
     }
 
@@ -201,7 +204,16 @@ export default function init(el) {
         hover(pictures[index], hoverPictures[index]);
       };
     });
-    
+
+    const svgImage = document.createElement('img');
+    svgImage.src = 'https://main--cc--adobecom.hlx.page/drafts/drashti/MWPW-137345/assets/genfill/see-it-in-action-white.svg';
+    // as a bg image - encode svg in base64
+    svgImage.style.position = 'absolute';
+    svgImage.style.right = '240px';
+    svgImage.style.top = '0';
+    svgImage.style.width = '240px';
+    // svgImage.style.display = 'none';
+    media.insertBefore(svgImage, pictureContainer);
   }
 
   if (el.classList.contains('split')) {
