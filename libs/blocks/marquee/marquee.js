@@ -133,7 +133,7 @@ export default function init(el) {
   const text = headline.closest('div');
   text.classList.add('text');
   const media = foreground.querySelector(':scope > div:not([class])');
-
+  
   if (media) {
     media.classList.add('media');
     const video = media.querySelector('video, a[href*=".mp4"]');
@@ -153,6 +153,57 @@ export default function init(el) {
   const iconArea = text.querySelector('.icon-area');
   if (iconArea?.childElementCount > 1) decorateMultipleIconArea(iconArea);
   extendButtonsClass(text);
+
+  if (el.classList.contains('interactive')) {
+    const hoverMedia = foreground.querySelector(':scope > div:not([class])');
+    const hoverPictures = hoverMedia.querySelectorAll('picture');
+    hoverPictures.forEach( picture => {
+      picture.classList.add('hoverImg');
+    })
+    const pictures = media.querySelectorAll('picture');
+
+    const pictureContainer = media.children[0];
+    pictureContainer.classList.add('showImage');
+
+    function handleClick(index) {
+      hoverPictures[index].style.display = 'none';
+      pictures[(index+1) % pictures.length].style.display = 'block';
+    };
+
+    hoverPictures.forEach((picture, index) => {
+      picture.onclick = function () {handleClick(index)};
+    })
+
+    function hover(picture1, picture2) {
+      picture1.style.display = 'none';
+      picture2.style.display = 'block';
+      if (picture2.style.display === 'block') {
+        picture2.onmouseleave = function (e) {hoverOut(e);}
+      }
+    }
+
+    function hoverOut(e) {
+      if (e.target.style.display !== 'none') {
+        e.target.style.display = 'none';
+        e.target.previousElementSibling.style.display = 'block';
+      }
+    }
+
+    pictures[0].classList.add('show');
+    pictures.forEach((picture, index) => {
+      picture.classList.add('clickImage');
+      if (!picture.classList.contains('show')) {
+        picture.style.display = 'none';
+      }
+      picture.parentElement.appendChild(hoverPictures[index]);
+      hoverPictures[index].style.display = 'none';
+      picture.onmouseenter = function () {
+        hover(pictures[index], hoverPictures[index]);
+      };
+    });
+    
+  }
+
   if (el.classList.contains('split')) {
     if (foreground && media) {
       media.classList.add('bleed');
