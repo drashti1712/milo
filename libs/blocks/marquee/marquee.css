@@ -235,6 +235,7 @@
   order: 0;
   width: 100%;
   margin: 0;
+  z-index: 1;
 }
 
 .marquee.split .media img,
@@ -437,6 +438,7 @@
     width: 50vw;
     right: 0;
     height: 100%;
+    display: none;
   }
   
   .marquee.split.row-reversed .media.bleed {
