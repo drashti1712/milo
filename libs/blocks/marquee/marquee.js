@@ -57,12 +57,43 @@ const decorateImage = (media) => {
 
   const imageLink = media.querySelector('a');
   const picture = media.querySelector('picture');
-
+  // const pics = media.querySelectorAll('picture');
+  // console.log(pics);
+  // if( media.closest('.marquee').classList.contains('split') ) {
+  //   const binaryVP = [['mobile-only'], ['tablet-only', 'desktop-only']];
+  //   const allVP = [['mobile-only'], ['tablet-only'], ['desktop-only']];
+  //   const vp = pics.length === 2 ? binaryVP : allVP;
+  //   if (pics.length > 1) {
+  //     pics.forEach( (pic,i) => {
+  //       pic.classList.add(...vp[i]);
+  //       const position = pic.nextSibling.data?.trim();
+  //       pic.nextSibling.data = null;
+  //       console.log(position);
+  //       media.querySelectorAll('br').forEach(br => br.remove());
+  //       if( position === 'bottom' ) {
+  //         pic.classList.add('bottom');
+  //         pic.style.order = '1';
+  //       }
+  //     });
+  //   } else {
+  //     pics[0].classList.add(...allVP[0], ...allVP[1], ...allVP[2]);
+  //   }
+  // }
   if (imageLink && picture && !imageLink.parentElement.classList.contains('modal-img-link')) {
     imageLink.textContent = '';
     imageLink.append(picture);
   }
 };
+
+function removePTags(media) {
+  const pTags = media.querySelectorAll('p');
+  pTags.forEach(p => {
+    console.log('pp', p.firstElementChild);
+    const pic = p.firstElementChild ? p.firstElementChild : p.innerHTML;
+    media.append(pic);
+    p.remove();
+  });
+}
 
 export default function init(el) {
   const isLight = el.classList.contains('light');
@@ -78,11 +109,15 @@ export default function init(el) {
   const text = headline.closest('div');
   text.classList.add('text');
   const media = foreground.querySelector(':scope > div:not([class])');
-
-  if (media) {
-    media.classList.add('media');
-    if (!media.querySelector('video, a[href*=".mp4"]')) decorateImage(media);
-  }
+  console.log(media.childNodes);
+  const mediaEls = foreground.querySelectorAll(':scope > div:not([class])');
+  console.log('media els', mediaEls);
+  mediaEls.forEach(media => {
+    if (media) {
+      media.classList.add('media');
+      if (!media.querySelector('video, a[href*=".mp4"]')) decorateImage(media);
+    }
+  });
 
   const firstDivInForeground = foreground.querySelector(':scope > div');
   if (firstDivInForeground?.classList.contains('media')) el.classList.add('row-reversed');
@@ -94,24 +129,50 @@ export default function init(el) {
   if (iconArea?.childElementCount > 1) decorateMultipleIconArea(iconArea);
   extendButtonsClass(text);
   if (el.classList.contains('split')) {
-    if (foreground && media) {
-      media.classList.add('bleed');
-      foreground.insertAdjacentElement('beforebegin', media);
-    }
-
-    let mediaCreditInner;
-    const txtContent = media?.lastChild.textContent.trim();
-    if (txtContent) {
-      mediaCreditInner = createTag('p', { class: 'body-s' }, txtContent);
-    } else if (media.lastElementChild?.tagName !== 'PICTURE') {
-      mediaCreditInner = media.lastElementChild;
-    }
-
-    if (mediaCreditInner) {
-      const mediaCredit = createTag('div', { class: 'media-credit container' }, mediaCreditInner);
-      el.appendChild(mediaCredit);
-      el.classList.add('has-credit');
-      media?.lastChild.remove();
+    const binaryVP = [['mobile-only'], ['tablet-only', 'desktop-only']];
+    const allVP = [['mobile-only'], ['tablet-only'], ['desktop-only']];
+    const vp = mediaEls.length === 2 ? binaryVP : allVP;
+    console.log("bg video check", el.querySelector('.background video, a[href*=".mp4"]'));
+    
+    mediaEls.forEach( (media, i) => {
+      if (foreground && media) {
+        media.classList.add('bleed');
+        foreground.insertAdjacentElement('beforebegin', media);
+      }
+      if (mediaEls.length > 1) media.classList.add(...vp[i]);
+      else if (mediaEls.length === 1) {
+        mediaEls[0].classList.add(...allVP[0], ...allVP[1], ...allVP[2]);
+      }
+      
+      // const pTags = media.querySelectorAll('p');
+      // pTags.forEach(p => {
+      //   // console.log('pp', p.firstElementChild);
+      //   const pic = p.firstElementChild ? p.firstElementChild : p.innerHTML;
+      //   media.append(pic);
+      //   p.remove();
+      // });
+      const mobileImagePosition = media?.firstChild.textContent.trim();
+      if(mobileImagePosition) {
+        media.firstChild.textContent = null;
+        media.querySelectorAll('br').forEach(br => br.remove());
+        media.classList.add(mobileImagePosition.toLowerCase());
+      }
+      let mediaCreditInner;
+      const txtContent = media?.lastChild.textContent.trim();
+      if (txtContent) {
+        mediaCreditInner = createTag('p', { class: 'body-s' }, txtContent);
+      } else if (media.lastElementChild?.tagName !== 'PICTURE') {
+        mediaCreditInner = media.lastElementChild;
+      }
+      if (mediaCreditInner) {
+        const mediaCredit = createTag('div', { class: 'media-credit container' }, mediaCreditInner);
+        el.appendChild(mediaCredit);
+        el.classList.add('has-credit');
+        media?.lastChild.remove();
+      }
+    });
+    if ( el.querySelector('.background video, a[href*=".mp4"]')) {
+      el.querySelector('.media.desktop-only').classList.add('has-video');
     }
   }
 }
