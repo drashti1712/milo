@@ -227,6 +227,42 @@
   order: 0;
   width: 100%;
   margin: 0;
+  z-index: 1;
+}
+
+.marquee.split .foreground.tablet-only,
+.marquee.split .foreground.desktop-only {
+  display: none;
+}
+
+.marquee.split .foreground.mobile-only {
+  display: block;
+}
+
+/* .marquee.split .media .tablet-only,
+.marquee.split .media .desktop-only {
+  display: none;
+}
+
+.marquee.split .media .mobile-only {
+  display: block;
+} */
+
+.marquee.split .media.media-top {
+  order: 0;
+}
+
+.marquee.split .media.media-bottom {
+  order: 1;
+}
+
+.marquee.split .media.tablet-only,
+.marquee.split .media.desktop-only {
+  display: none;
+}
+
+.marquee.split .media.mobile-only {
+  display: block;
 }
 
 .marquee.split .media img,
@@ -351,6 +387,10 @@
     color: var(--color-white);
   }
 
+  /* .marquee.split .text {
+    order: 0;
+  } */
+
   .marquee.split.large .text {
     margin: 0;
   }
@@ -429,8 +469,35 @@
     width: 50vw;
     right: 0;
     height: 100%;
+    /* display: none; */
   }
+  .marquee.split .foreground .mobile-only,
+  .marquee.split .foreground .desktop-only {
+    display: none;
+  }
+
+  .marquee.split .foreground .tablet-only {
+    display: block;
+  }
+
+  /* .marquee.split .media .mobile-only,
+  .marquee.split .media .desktop-only {
+    display: none;
+  }
+
+  .marquee.split .media .tablet-only {
+    display: block;
+  } */
   
+  .marquee.split .media.mobile-only,
+  .marquee.split .media.desktop-only {
+    display: none;
+  }
+
+  .marquee.split .media.tablet-only {
+    display: block;
+  }
+
   .marquee.split.row-reversed .media.bleed {
     right: auto;
     left: 0;
@@ -490,6 +557,42 @@
   .marquee.split {
     min-height: 560px;
   }
+
+  /* .marquee.split .media.bleed {
+    display: none;
+  } */
+
+  .marquee.split .foreground .mobile-only,
+  .marquee.split .foreground .tablet-only {
+    display: none;
+  }
+
+  .marquee.split .foreground .desktop-only {
+    display: block;
+  }
+
+  /* .marquee.split .media .mobile-only,
+  .marquee.split .media .tablet-only {
+    display: none;
+  }
+
+  .marquee.split .media .desktop-only {
+    display: block;
+  } */
+
+  .marquee.split .media.mobile-only,
+  .marquee.split .media.tablet-only {
+    display: none;
+  }
+
+  .marquee.split .media.desktop-only {
+    display: block;
+  }
+
+  /*
+  .marquee.split .media.desktop-only.has-video {
+    display: none;
+  } */
 
   .marquee.small {
     min-height: 360px;
