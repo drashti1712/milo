@@ -68,7 +68,12 @@ export default function init(el) {
   const excDark = ['light', 'quiet'];
   if (!excDark.some((s) => el.classList.contains(s))) el.classList.add('dark');
   const children = el.querySelectorAll(':scope > div');
-  const foreground = children[children.length - 1];
+  let foreground;
+  if(el.classList.contains('split') && children.length > 2) {
+    foreground = children[1];
+  } else {
+    foreground = children[children.length - 1];
+  }
   if (children.length > 1) {
     children[0].classList.add('background');
     decorateBlockBg(el, children[0], { useHandleFocalpoint: true });
@@ -94,6 +99,24 @@ export default function init(el) {
   if (iconArea?.childElementCount > 1) decorateMultipleIconArea(iconArea);
   extendButtonsClass(text);
   if (el.classList.contains('split')) {
+    const mediaDivs = el.querySelectorAll(':scope > div:not([class])');
+    const sameVP = ['mobile-only', 'tablet-only', 'desktop-only'];
+    const binaryVP = [['mobile-only'], ['tablet-only', 'desktop-only']];
+    const allVP = [['mobile-only'], ['tablet-only'], ['desktop-only']];
+    if (mediaDivs.length === 0) {
+      media.querySelector('picture').classList.add(...sameVP);
+    } else {
+      const vp = mediaDivs.length === 1 ? binaryVP : allVP;
+      media.querySelector('picture').classList.add(...vp[0]);
+      mediaDivs.forEach( (div,i) => {
+        const pic = div.querySelector('picture');
+        if(pic) {
+          pic.classList.add(...vp[i+1]);
+          media.appendChild(pic);
+        }
+        div.remove();
+      })
+    }
     if (foreground && media) {
       media.classList.add('bleed');
       foreground.insertAdjacentElement('beforebegin', media);
