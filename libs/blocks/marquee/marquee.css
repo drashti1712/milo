@@ -230,6 +230,10 @@
   z-index: 1;
 }
 
+.marquee.split .media.mobile-reverse{
+  order: 1;
+}
+
 .marquee.split .media .tablet-only,
 .marquee.split .media .desktop-only {
   display: none;

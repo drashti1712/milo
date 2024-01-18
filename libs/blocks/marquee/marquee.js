@@ -99,23 +99,30 @@ export default function init(el) {
   if (iconArea?.childElementCount > 1) decorateMultipleIconArea(iconArea);
   extendButtonsClass(text);
   if (el.classList.contains('split')) {
-    const mediaDivs = el.querySelectorAll(':scope > div:not([class])');
-    const sameVP = ['mobile-only', 'tablet-only', 'desktop-only'];
+    const mediaEls = el.querySelectorAll(':scope > div:not([class])');
     const binaryVP = [['mobile-only'], ['tablet-only', 'desktop-only']];
     const allVP = [['mobile-only'], ['tablet-only'], ['desktop-only']];
-    if (mediaDivs.length === 0) {
-      media.querySelector('picture').classList.add(...sameVP);
+
+    const pic = media.querySelector('picture');
+    const isSingleDiv = mediaEls.length === 1;
+
+    if (mediaEls.length === 0) {
+      pic.classList.add( 'mobile-only', 'tablet-only', 'desktop-only' );
     } else {
-      const vp = mediaDivs.length === 1 ? binaryVP : allVP;
-      media.querySelector('picture').classList.add(...vp[0]);
-      mediaDivs.forEach( (div,i) => {
+      const vp = isSingleDiv ? binaryVP : allVP;
+      pic.classList.add(...vp[0]);
+
+      mediaEls.forEach( (div,i) => {
         const pic = div.querySelector('picture');
         if(pic) {
           pic.classList.add(...vp[i+1]);
           media.appendChild(pic);
         }
         div.remove();
-      })
+      });
+    }
+    if(el.classList.contains('mobile-reverse-order')) {
+      media.classList.add('mobile-reverse');
     }
     if (foreground && media) {
       media.classList.add('bleed');
