@@ -155,8 +155,8 @@ const eagerLoad = (img) => {
       //   eagerLoad(firstDiv.children[firstDiv.childElementCount-2].querySelector('img'));
       //   eagerLoad(bg.children[Math.max(0,bg.childElementCount-2)].querySelector('img'));
       // } else {
-        eagerLoad(firstDiv.children[1].querySelector('img')); 
         eagerLoad(bg.firstElementChild.querySelector('img'));
+        eagerLoad(firstDiv.children[1].querySelector('img')); 
       // }
     } else {
       firstDiv.querySelectorAll('img').forEach(eagerLoad);
