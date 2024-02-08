@@ -60,8 +60,7 @@
       "environments": [ "edit" ],
       "url": "/tools/version-history",
       "passReferrer": true,
-      "excludePaths": [ "/**" ],
-      "includePaths": [ "**/:x**" ]
+      "includePaths": [ "**.docx**", "**.xlsx**" ]
     },
     {
       "containerId": "tools",
