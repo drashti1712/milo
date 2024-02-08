@@ -58,7 +58,7 @@
       "id": "sample-block",
       "title": "Sample Block",
       "environments": [ "edit" ],
-      "url": "/tools/floodgate/index.html?project=milo--adobecom",
+      "url": "/tools/version-history",
       "passReferrer": true,
       "excludePaths": [ "/**" ],
       "includePaths": [ "**/:x**" ]
