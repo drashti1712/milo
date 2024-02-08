@@ -58,7 +58,7 @@
       "id": "sample-block",
       "title": "Sample Block",
       "environments": [ "edit" ],
-      "url": "/drafts/drashti/sample-tools/sample-block",
+      "url": "/tools/floodgate/index.html?project=milo--adobecom",
       "passReferrer": true,
       "excludePaths": [ "/**" ],
       "includePaths": [ "**/:x**" ]
