@@ -55,6 +55,16 @@
     },
     {
       "containerId": "tools",
+      "id": "sample-block",
+      "title": "Sample Block",
+      "environments": [ "edit" ],
+      "url": "/drafts/drashti/sample-tools/sample-block",
+      "passReferrer": true,
+      "excludePaths": [ "/**" ],
+      "includePaths": [ "**/:x**" ]
+    },
+    {
+      "containerId": "tools",
       "title": "Send to CaaS",
       "id": "sendtocaas",
       "environments": ["dev", "preview", "live", "prod"],
