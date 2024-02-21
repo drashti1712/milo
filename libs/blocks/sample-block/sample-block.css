@@ -1,0 +1,23 @@
+:root {
+  /* Colors */
+  --hlx-sk-bg: rgb(48 48 48);
+  --hlx-sk-color: #FFF;
+  --notch-size: 12px;
+}
+
+.slider {
+  background-color: var(--hlx-sk-bg);
+  color: var(--hlx-sk-color);
+  width: 50%;
+}
+
+.slider-form {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  padding: 32px;
+}
+
+.slider input {
+  margin-bottom: 16px;
+}
