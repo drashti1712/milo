@@ -24,8 +24,8 @@
 .aside .split-image video {
   object-fit: cover;
   min-height: 700px;
-  width: 100%;
-  height: 100%;
+  width: 375px;
+  height: 270px;
 }
 
 .aside.notification .background img {
