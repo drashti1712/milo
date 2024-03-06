@@ -16,7 +16,7 @@ const loadVideo = (a) => {
   }
 
   const attrs = getVideoAttrs(hash, dataset);
-  const video = `<video ${attrs} preload="auto" loading="lazy">
+  const video = `<video ${attrs} preload="auto" loading="eager" fetchpriority="high">
         <source src="${videoPath}" type="video/mp4" />
       </video>`;
   if (!a.parentNode) return;
