@@ -47,11 +47,11 @@ function branchInit(header) {
       header.style.position = 'sticky';
     });
   }
-  initBranch();
-  // ['adobePrivacy:PrivacyConsent', 'adobePrivacy:PrivacyReject', 'adobePrivacy:PrivacyCustom']
-  //     .forEach(function (event) {
-  //         window.addEventListener(event, initBranch);
-  //     });
+  // initBranch();
+  ['adobePrivacy:PrivacyConsent', 'adobePrivacy:PrivacyReject', 'adobePrivacy:PrivacyCustom']
+      .forEach(function (event) {
+          window.addEventListener(event, initBranch);
+      });
 }
 
 
