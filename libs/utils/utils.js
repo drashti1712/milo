@@ -1147,6 +1147,20 @@ async function processSection(section, config, isDoc) {
 }
 
 export async function loadArea(area = document) {
+  const bannerData = getMetadata('app-banner-source');
+  console.log('drashti metadata', bannerData);
+  if (bannerData) {
+    // console.log('gnav', area.body.querySelector('header'));
+    const body = area.body;
+    // const header = area.body.querySelector('header');
+    // body.style.position = 'absolute';
+    // body.style.marginTop = '80px';
+    const x = document.createElement('div');
+    x.style.minHeight = '80px'; // class
+    x.style.display = 'flex';
+    x.classList.add('app-banner-con');
+    body.prepend(x);
+  }
   const isDoc = area === document;
 
   if (isDoc) {
