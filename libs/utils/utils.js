@@ -520,9 +520,11 @@ export function decorateSVG(a) {
 }
 
 export function decorateImageLinks(el) {
+  console.log("decorate image links --", el);
   const images = el.querySelectorAll('img[alt*="|"]');
   if (!images.length) return;
   [...images].forEach((img) => {
+    console.log('img', img);
     const [source, alt, icon] = img.alt.split('|');
     try {
       const url = new URL(source.trim());
@@ -531,12 +533,16 @@ export function decorateImageLinks(el) {
       const pic = img.closest('picture');
       const picParent = pic.parentElement;
       if (href.includes('.mp4')) {
-        const a = createTag('a', { href: url, 'data-video-poster': img.src });
+        const a = createTag('a', { href: url, 'data-video-poster': img.src }); //adds video attr and video.js
+        // we want ki woh as a img tag render till lcp is call and then render video elemnent
+        // within 7 sec does not image
         a.innerHTML = url;
-        pic.replaceWith(a);
+        setTimeout(() => {
+          pic.replaceWith(a); // this a tag replaces the picture tag, converting the image into a video link
+        }, 12000);
       } else {
         const aTag = createTag('a', { href, class: 'image-link' });
-        picParent.insertBefore(aTag, pic);
+        picParent.insertBefore(aTag, pic); // if not mp4, a tag is aaded before the picture tag
         if (icon) {
           import('./image-video-link.js').then((mod) => mod.default(picParent, aTag, icon));
         } else {
