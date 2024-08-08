@@ -4,6 +4,10 @@ import { applyHoverPlay, getVideoAttrs, applyInViewPortPlay } from '../../utils/
 const ROOT_MARGIN = 1000;
 
 const loadVideo = (a) => {
+  console.log("video load", a);
+  if (a.hasAttribute('data-video-poster')) {
+    console.log('The <a> tag contains the data-video-lcp attribute.');
+  } 
   const { pathname, hash, dataset } = a;
   let videoPath = `.${pathname}`;
   if (pathname.match('media_.*.mp4')) {
@@ -27,6 +31,12 @@ const loadVideo = (a) => {
   a.remove();
 };
 
+function loadDelayedVideo(a) {
+  setTimeout(() => {
+    loadVideo(a);
+  }, 10000);
+}
+
 export default function init(a) {
   a.classList.add('hide-video');
   if (a.textContent.includes('no-lazy')) {
@@ -35,7 +45,7 @@ export default function init(a) {
     createIntersectionObserver({
       el: a,
       options: { rootMargin: `${ROOT_MARGIN}px` },
-      callback: loadVideo,
+      callback: loadDelayedVideo,
     });
   }
 }

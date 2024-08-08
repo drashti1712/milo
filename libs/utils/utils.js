@@ -533,13 +533,13 @@ export function decorateImageLinks(el) {
       const pic = img.closest('picture');
       const picParent = pic.parentElement;
       if (href.includes('.mp4')) {
-        const a = createTag('a', { href: url, 'data-video-poster': img.src }); //adds video attr and video.js
-        // we want ki woh as a img tag render till lcp is call and then render video elemnent
+        // setTimeout(() => {
+          const a = createTag('a', { href: url, 'data-video-poster': img.src }); //adds video attr and video.js
+        // we want it as a img tag render till lcp is call and then render video elemnent
         // within 7 sec does not image
         a.innerHTML = url;
-        setTimeout(() => {
           pic.replaceWith(a); // this a tag replaces the picture tag, converting the image into a video link
-        }, 12000);
+        // }, 0);
       } else {
         const aTag = createTag('a', { href, class: 'image-link' });
         picParent.insertBefore(aTag, pic); // if not mp4, a tag is aaded before the picture tag
