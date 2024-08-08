@@ -32,9 +32,10 @@ const loadVideo = (a) => {
 };
 
 function loadDelayedVideo(a) {
-  // setTimeout(() => {
+  setTimeout(() => {
     loadVideo(a);
-  // }, 10000);
+    console.log("loading...");
+  }, 11000);
 }
 
 export default function init(a) {
