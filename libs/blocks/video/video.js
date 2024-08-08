@@ -5,9 +5,6 @@ const ROOT_MARGIN = 1000;
 
 const loadVideo = (a) => {
   console.log("video load", a);
-  if (a.hasAttribute('data-video-poster')) {
-    console.log('The <a> tag contains the data-video-lcp attribute.');
-  } 
   const { pathname, hash, dataset } = a;
   let videoPath = `.${pathname}`;
   if (pathname.match('media_.*.mp4')) {
@@ -33,12 +30,14 @@ const loadVideo = (a) => {
 
 function loadDelayedVideo(a) {
   setTimeout(() => {
+    // a.style.display = 'block';
+    a.nextElementSibling.remove();
     loadVideo(a);
-    console.log("loading...");
-  }, 11000);
+  }, 12000);
 }
 
 export default function init(a) {
+  console.log("video init");
   a.classList.add('hide-video');
   if (a.textContent.includes('no-lazy')) {
     loadVideo(a);
@@ -46,7 +45,7 @@ export default function init(a) {
     createIntersectionObserver({
       el: a,
       options: { rootMargin: `${ROOT_MARGIN}px` },
-      callback: loadDelayedVideo,
+      callback: a.hasAttribute('data-video-poster') ? loadDelayedVideo : loadVideo,
     });
   }
 }
