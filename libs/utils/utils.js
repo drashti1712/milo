@@ -466,14 +466,22 @@ export async function loadBlock(block) {
   const blockPath = `${path}/${name}`;
 
   const styleLoaded = hasStyles && new Promise((resolve) => {
-    loadStyle(`${blockPath}.css`, resolve);
+    loadStyle(`${blockPath}.css`, resolve); // loads video.css in n/w tab
   });
 
   const scriptLoaded = new Promise((resolve) => {
     (async () => {
       try {
-        const { default: init } = await import(`${blockPath}.js`);
-        await init(block);
+        if (block.classList.contains('delay-load')) {
+          setTimeout(async () => {
+            // a.nextElementSibling.remove();
+            const { default: init } = await import(`${blockPath}.js`); // loads video.js
+            await init(block);
+          }, 10000);
+        } else {
+          const { default: init } = await import(`${blockPath}.js`); // loads video.js
+          await init(block);
+        }
       } catch (err) {
         console.log(`Failed loading ${name}`, err);
         const config = getConfig();
@@ -537,8 +545,9 @@ export function decorateImageLinks(el) {
       if (href.includes('.mp4')) {
         const a = createTag('a', { href: url, 'data-video-poster': img.src, class: 'delay-load' });
         a.innerHTML = url;
-        pic.replaceWith(a);
-        console.log('Video link:', a);
+        // pic.replaceWith(a);/
+        a.style.position = 'absolute';
+        picParent.insertBefore(a, pic);
       } else {
         const aTag = createTag('a', { href, class: 'image-link' });
         picParent.insertBefore(aTag, pic);
