@@ -449,6 +449,10 @@ export async function loadBlock(block) {
     block.remove();
     return null;
   }
+  console.log(block);
+  if (block.classList.contains('delay-load')) {
+    console.log('DELAYY LOAD');
+  }
 
   const name = block.classList[0];
   const hasStyles = AUTO_BLOCKS.find((ab) => Object.keys(ab).includes(name))?.styles ?? true;
@@ -531,9 +535,10 @@ export function decorateImageLinks(el) {
       const pic = img.closest('picture');
       const picParent = pic.parentElement;
       if (href.includes('.mp4')) {
-        const a = createTag('a', { href: url, 'data-video-poster': img.src });
+        const a = createTag('a', { href: url, 'data-video-poster': img.src, class: 'delay-load' });
         a.innerHTML = url;
         pic.replaceWith(a);
+        console.log('Video link:', a);
       } else {
         const aTag = createTag('a', { href, class: 'image-link' });
         picParent.insertBefore(aTag, pic);
@@ -613,14 +618,19 @@ export function decorateAutoBlock(a) {
       return false;
     }
 
-    a.className = `${key} link-block`;
+    if (a.classList.contains('delay-load')) {
+      a.className = `${key} link-block delay-load`;
+    } else {
+      a.className = `${key} link-block`;
+    }
+    // a.className = `${key} link-block`;
     return true;
   });
 }
 
 export function decorateLinks(el) {
   const config = getConfig();
-  decorateImageLinks(el);
+  decorateImageLinks(el); // picture tag converted to a tag with mp4 video href
   const anchors = el.getElementsByTagName('a');
   return [...anchors].reduce((rdx, a) => {
     appendHtmlToLink(a);
@@ -764,7 +774,6 @@ function decorateSection(section, idx) {
   let links = decorateLinks(section);
   decorateDefaults(section);
   const blocks = section.querySelectorAll(':scope > div[class]:not(.content)');
-
   const { doNotInline } = getConfig();
   const blockLinks = [...blocks].reduce((blkLinks, block) => {
     const blockName = block.classList[0];
@@ -1150,6 +1159,8 @@ async function processSection(section, config, isDoc) {
 
   if (section.preloadLinks.length) {
     const [modals, nonModals] = partition(section.preloadLinks, (block) => block.classList.contains('modal'));
+    console.log('modals: ', modals);
+    console.log('non modals: ', nonModals);
     const preloads = nonModals.map((block) => loadBlock(block));
     await Promise.all(preloads);
     modals.forEach((block) => loadBlock(block));
@@ -1175,6 +1186,7 @@ async function processSection(section, config, isDoc) {
 }
 
 export async function loadArea(area = document) {
+  console.log("in load area"  + area);
   const isDoc = area === document;
 
   if (isDoc) {
