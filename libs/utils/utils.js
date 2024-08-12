@@ -471,12 +471,8 @@ export async function loadBlock(block) {
     (async () => {
       try {
         const { default: init } = await import(`${blockPath}.js`);
-        if (block.classList.contains('delay-video')) {
-          const blkParent = block.parentElement;
-          await init(blkParent);
-        } else {
-          await init(block);
-        }
+        const target = block.classList.contains('delay-video') ? block.parentElement : block;
+        await init(target);
       } catch (err) {
         console.log(`Failed loading ${name}`, err);
         const config = getConfig();
@@ -540,7 +536,7 @@ export function decorateImageLinks(el) {
       if (href.includes('.mp4')) {
         const a = createTag('a', { href: url, 'data-video-poster': img.src, class: 'delay-video' });
         a.innerHTML = url;
-        // pic.replaceWith(a);  // pic --> a --> video
+        // pic.replaceWith(a);
         picParent.insertBefore(a, pic);
       } else {
         const aTag = createTag('a', { href, class: 'image-link' });
