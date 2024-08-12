@@ -37,6 +37,7 @@ export default function init(el) {
     setTimeout(() => {
       console.log(a);
       console.log(el);
+      el.appendChild(a);
       loadVideo(a);
     }, 8000);
   } else {
