@@ -540,6 +540,7 @@ export function decorateImageLinks(el) {
         // pic.replaceWith(a);
         // a.style.position = 'absolute';
         picParent.appendChild(a);
+        console.log(picParent);
       } else {
         const aTag = createTag('a', { href, class: 'image-link' });
         picParent.insertBefore(aTag, pic);
