@@ -1167,6 +1167,7 @@ async function processSection(section, config, isDoc) {
       console.log('process sec', block);
       if (block.classList.contains('delay-load')) {
         setTimeout(async () => {
+          console.log(section);
           loadBlock(block);
         }, 10000);
       } else {
