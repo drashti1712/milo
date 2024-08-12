@@ -472,7 +472,6 @@ export async function loadBlock(block) {
       try {
         const { default: init } = await import(`${blockPath}.js`);
         if (block.classList.contains('delay-video')) {
-          console.log(block);
           const blkParent = block.parentElement;
           await init(blkParent);
         } else {
@@ -543,7 +542,6 @@ export function decorateImageLinks(el) {
         a.innerHTML = url;
         // pic.replaceWith(a);  // pic --> a --> video
         picParent.insertBefore(a, pic);
-        console.log(picParent);
       } else {
         const aTag = createTag('a', { href, class: 'image-link' });
         picParent.insertBefore(aTag, pic);
