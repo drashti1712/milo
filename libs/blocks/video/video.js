@@ -39,7 +39,7 @@ export default function init(el) {
       console.log(el);
       if (!el.querySelector('a')) el.appendChild(a);
       loadVideo(a);
-    }, 3000);
+    }, 2000);
   } else {
     createIntersectionObserver({
       el: a,
