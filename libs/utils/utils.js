@@ -535,9 +535,11 @@ export function decorateImageLinks(el) {
       const pic = img.closest('picture');
       const picParent = pic.parentElement;
       if (href.includes('.mp4')) {
-        const a = createTag('a', { href: url, 'data-video-poster': img.src, class: 'delay-load', 'data-pic': pic });
+        const a = createTag('a', { href: url, 'data-video-poster': img.src, class: 'delay-load' });
         a.innerHTML = url;
-        pic.replaceWith(a);
+        setTimeout(() => {
+          pic.replaceWith(a);
+        }, 5000);
         // a.style.position = 'absolute';
         // picParent.appendChild(a);
         console.log(picParent);
