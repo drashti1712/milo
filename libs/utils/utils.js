@@ -449,10 +449,6 @@ export async function loadBlock(block) {
     block.remove();
     return null;
   }
-  console.log(block);
-  if (block.classList.contains('delay-load')) {
-    console.log('DELAYY LOAD');
-  }
 
   const name = block.classList[0];
   const hasStyles = AUTO_BLOCKS.find((ab) => Object.keys(ab).includes(name))?.styles ?? true;
@@ -537,9 +533,10 @@ export function decorateImageLinks(el) {
       if (href.includes('.mp4')) {
         const a = createTag('a', { href: url, 'data-video-poster': img.src, class: 'delay-load' });
         a.innerHTML = url;
-        pic.replaceWith(a);
-        // a.style.position = 'absolute';
-        picParent.appendChild(pic);
+        // pic.replaceWith(a);
+        a.style.position = 'absolute';
+        picParent.insertBefore(a, pic);
+        // picParent.appendChild(pic);
         console.log(picParent);
       } else {
         const aTag = createTag('a', { href, class: 'image-link' });
@@ -1165,14 +1162,14 @@ async function processSection(section, config, isDoc) {
     console.log('non modals: ', nonModals);
     const preloads = nonModals.map((block) => {
       console.log('process sec', block);
-      if (block.classList.contains('delay-load')) {
-        setTimeout(async () => {
-          console.log(block);
-          loadBlock(block);
-        }, 10000);
-      } else {
+      // if (block.classList.contains('delay-load')) {
+      //   setTimeout(async () => {
+      //     console.log(block);
+      //     loadBlock(block);
+      //   }, 10000);
+      // } else {
         loadBlock(block);
-      }
+      // }
     });
     await Promise.all(preloads);
     modals.forEach((block) => loadBlock(block));

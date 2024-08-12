@@ -27,10 +27,19 @@ const loadVideo = (a) => {
   a.remove();
 };
 
+function loadDelayedVideo(a) {
+  setTimeout(() => {
+    // a.style.display = 'block';
+    // a.nextElementSibling.remove();
+    loadVideo(a);
+  }, 9000);
+}
+
 export default function init(a) {
   a.classList.add('hide-video');
   if (a.textContent.includes('no-lazy')) {
-    loadVideo(a);
+    // loadVideo(a); 
+    a.hasAttribute('data-video-poster') ? loadDelayedVideo(a) : loadVideo(a);
   } else {
     createIntersectionObserver({
       el: a,
