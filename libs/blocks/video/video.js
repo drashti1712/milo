@@ -31,7 +31,7 @@ const loadVideo = (a) => {
 function loadDelayedVideo(a) {
   setTimeout(() => {
     // a.style.display = 'block';
-    a.nextElementSibling.remove();
+    // a.nextElementSibling.remove();
     loadVideo(a);
   }, 9000);
 }
