@@ -27,12 +27,16 @@ const loadVideo = (a) => {
   a.remove();
 };
 
-export default function init(a, el = null) {
+export default function init(el) {
   // parent
   console.log(' PARENT ', el);
+  let a = el;
+  if(el.nodeName !== 'A') a = el.querySelector('a');
   a.classList.add('hide-video');
   if (a.textContent.includes('no-lazy')) {
     setTimeout(() => {
+      console.log(a);
+      console.log(el);
       loadVideo(a);
     }, 8000);
   } else {

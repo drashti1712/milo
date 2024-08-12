@@ -474,7 +474,7 @@ export async function loadBlock(block) {
         if (block.classList.contains('delay-video')) {
           console.log(block);
           const blkParent = block.parentElement;
-          await init(block, blkParent);
+          await init(blkParent);
         } else {
           await init(block);
         }
