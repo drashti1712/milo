@@ -30,7 +30,9 @@ const loadVideo = (a) => {
 export default function init(a) {
   a.classList.add('hide-video');
   if (a.textContent.includes('no-lazy')) {
-    loadVideo(a);
+    setTimeout(() => {
+      loadVideo(a);
+    }, 8000);
   } else {
     createIntersectionObserver({
       el: a,
