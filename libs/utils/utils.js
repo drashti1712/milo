@@ -472,16 +472,8 @@ export async function loadBlock(block) {
   const scriptLoaded = new Promise((resolve) => {
     (async () => {
       try {
-        if (block.classList.contains('delay-load')) {
-          setTimeout(async () => {
-            // a.nextElementSibling.remove();
-            const { default: init } = await import(`${blockPath}.js`); // loads video.js
-            await init(block);
-          }, 10000);
-        } else {
-          const { default: init } = await import(`${blockPath}.js`); // loads video.js
-          await init(block);
-        }
+        const { default: init } = await import(`${blockPath}.js`); // loads video.js
+        await init(block);
       } catch (err) {
         console.log(`Failed loading ${name}`, err);
         const config = getConfig();
@@ -545,9 +537,7 @@ export function decorateImageLinks(el) {
       if (href.includes('.mp4')) {
         const a = createTag('a', { href: url, 'data-video-poster': img.src, class: 'delay-load' });
         a.innerHTML = url;
-        // pic.replaceWith(a);/
-        a.style.position = 'absolute';
-        picParent.insertBefore(a, pic);
+        pic.replaceWith(a);
       } else {
         const aTag = createTag('a', { href, class: 'image-link' });
         picParent.insertBefore(aTag, pic);
@@ -1170,7 +1160,16 @@ async function processSection(section, config, isDoc) {
     const [modals, nonModals] = partition(section.preloadLinks, (block) => block.classList.contains('modal'));
     console.log('modals: ', modals);
     console.log('non modals: ', nonModals);
-    const preloads = nonModals.map((block) => loadBlock(block));
+    const preloads = nonModals.map((block) => {
+      console.log('process sec', block);
+      if (block.classList.contains('delay-load')) {
+        setTimeout(async () => {
+          loadBlock(block);
+        }, 10000);
+      } else {
+        loadBlock(block);
+      }
+    });
     await Promise.all(preloads);
     modals.forEach((block) => loadBlock(block));
   }
