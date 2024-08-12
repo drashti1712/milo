@@ -535,11 +535,11 @@ export function decorateImageLinks(el) {
       const pic = img.closest('picture');
       const picParent = pic.parentElement;
       if (href.includes('.mp4')) {
-        const a = createTag('a', { href: url, 'data-video-poster': img.src, class: 'delay-load' });
+        const a = createTag('a', { href: url, 'data-video-poster': img.src, class: 'delay-load', 'data-pic': pic });
         a.innerHTML = url;
-        // pic.replaceWith(a);
+        pic.replaceWith(a);
         // a.style.position = 'absolute';
-        picParent.appendChild(a);
+        // picParent.appendChild(a);
         console.log(picParent);
       } else {
         const aTag = createTag('a', { href, class: 'image-link' });
@@ -1167,7 +1167,7 @@ async function processSection(section, config, isDoc) {
       console.log('process sec', block);
       if (block.classList.contains('delay-load')) {
         setTimeout(async () => {
-          console.log(section);
+          console.log(block);
           loadBlock(block);
         }, 10000);
       } else {
