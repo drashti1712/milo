@@ -537,9 +537,9 @@ export function decorateImageLinks(el) {
       if (href.includes('.mp4')) {
         const a = createTag('a', { href: url, 'data-video-poster': img.src, class: 'delay-load' });
         a.innerHTML = url;
-        // pic.replaceWith(a);
-        a.style.position = 'absolute';
-        picParent.insertBefore(a, pic);
+        pic.replaceWith(a);
+        // a.style.position = 'absolute';
+        // picParent.insertBefore(a, pic);
       } else {
         const aTag = createTag('a', { href, class: 'image-link' });
         picParent.insertBefore(aTag, pic);
