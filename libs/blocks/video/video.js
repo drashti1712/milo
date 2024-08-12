@@ -28,6 +28,7 @@ const loadVideo = (a) => {
 };
 
 export default function init(a) {
+  // parent
   a.classList.add('hide-video');
   if (a.textContent.includes('no-lazy')) {
     setTimeout(() => {
