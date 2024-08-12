@@ -535,8 +535,9 @@ export function decorateImageLinks(el) {
       if (href.includes('.mp4')) {
         const a = createTag('a', { href: url, 'data-video-poster': img.src });
         a.innerHTML = url;
-        pic.replaceWith(a);
-        // picParent.insertBefore(a, pic);
+        // pic.replaceWith(a);  // pic --> a --> video
+        picParent.insertBefore(a, pic);
+        console.log(picParent);
       } else {
         const aTag = createTag('a', { href, class: 'image-link' });
         picParent.insertBefore(aTag, pic);
