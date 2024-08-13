@@ -3,7 +3,7 @@ import { applyHoverPlay, getVideoAttrs, applyInViewPortPlay } from '../../utils/
 
 const ROOT_MARGIN = 1000;
 
-const loadVideo = (a) => {
+const loadVideo = (a, pEl = null) => {
   const { pathname, hash, dataset } = a;
   let videoPath = `.${pathname}`;
   if (pathname.match('media_.*.mp4')) {
@@ -19,7 +19,8 @@ const loadVideo = (a) => {
   const video = `<video ${attrs}>
         <source src="${videoPath}" type="video/mp4" />
       </video>`;
-  if (!a.parentNode) return;
+  if (!a.parentNode && !a.classList.contains('delay-video')) return;
+  pEl.appendChild(a);
   a.insertAdjacentHTML('afterend', video);
   const videoElem = document.body.querySelector(`source[src="${videoPath}"]`)?.parentElement;
   applyHoverPlay(videoElem);
@@ -35,7 +36,7 @@ export default function init(elem) {
   a.classList.add('hide-video');
   if (a.textContent.includes('no-lazy')) {
     // loadVideo(a);
-    window.lazyloadedFn.push([loadVideo, a]);
+    window.lazyloadedFn.push([loadVideo, a, elem]);
   } else {
     createIntersectionObserver({
       el: a,
