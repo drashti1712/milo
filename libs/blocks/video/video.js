@@ -20,7 +20,7 @@ const loadVideo = (a, pEl = null) => {
         <source src="${videoPath}" type="video/mp4" />
       </video>`;
   if (!a.parentNode && !a.classList.contains('delay-video')) return;
-  pEl.appendChild(a);
+  if (pEl) pEl.appendChild(a);
   a.insertAdjacentHTML('afterend', video);
   const videoElem = document.body.querySelector(`source[src="${videoPath}"]`)?.parentElement;
   applyHoverPlay(videoElem);
