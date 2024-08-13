@@ -27,15 +27,22 @@ const loadVideo = (a) => {
   a.remove();
 };
 
+function loadDelayed(a) {
+  setTimeout(() => {
+    if (!elem.querySelector('a')) elem.appendChild(a);
+    loadVideo(a);
+  }, 2000);
+}
+
 export default function init(elem) {
   let a = elem;
   if(elem.nodeName !== 'A') a = elem.querySelector('a');
   a.classList.add('hide-video');
   if (a.textContent.includes('no-lazy')) {
-    setTimeout(() => {
-      if (!elem.querySelector('a')) elem.appendChild(a);
-      loadVideo(a);
-    }, 2000);
+    // setTimeout(() => {
+    //   if (!elem.querySelector('a')) elem.appendChild(a);
+    //   loadVideo(a);
+    // }, 2000);
   } else {
     createIntersectionObserver({
       el: a,
