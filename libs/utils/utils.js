@@ -991,6 +991,7 @@ async function loadPostLCP(config) {
     import('../features/personalization/preview.js')
       .then(({ default: decoratePreviewMode }) => decoratePreviewMode());
   }
+  // window.lazyloadedFn[0][0](window.lazyloadedFn[0][1]); // l
 }
 
 export function scrollToHashedElement(hash) {
