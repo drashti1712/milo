@@ -37,7 +37,7 @@ export default function init(elem) {
     setTimeout(() => {
       if (!elem.querySelector('a')) elem.appendChild(a);
       loadVideo(a);
-    }, 2000);
+    }, 7000);
     // window.lazyloadedFn.push([loadVideo, a]) //1
   } else {
     createIntersectionObserver({
