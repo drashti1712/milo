@@ -471,7 +471,9 @@ export async function loadBlock(block) {
     (async () => {
       try {
         const { default: init } = await import(`${blockPath}.js`);
-        await init(block);
+        // await init(block);
+        const target = block.classList.contains('delay-video') ? block.parentElement : block;
+        await init(target);
       } catch (err) {
         console.log(`Failed loading ${name}`, err);
         const config = getConfig();
@@ -533,9 +535,11 @@ export function decorateImageLinks(el) {
       const pic = img.closest('picture');
       const picParent = pic.parentElement;
       if (href.includes('.mp4')) {
-        const a = createTag('a', { href: url, 'data-video-poster': img.src });
+        // const a = createTag('a', { href: url, 'data-video-poster': img.src });
+        const a = createTag('a', { href: url, 'data-video-poster': img.src, class: 'delay-video' });
         a.innerHTML = url;
-        pic.replaceWith(a);
+        // pic.replaceWith(a);
+        picParent.insertBefore(a, pic);
       } else {
         const aTag = createTag('a', { href, class: 'image-link' });
         picParent.insertBefore(aTag, pic);
@@ -615,7 +619,8 @@ export function decorateAutoBlock(a) {
       return false;
     }
 
-    a.className = `${key} link-block`;
+    // a.className = `${key} link-block`;
+    a.className = a.classList.contains('delay-video') ? `${key} link-block delay-video` : `${key} link-block`;
     return true;
   });
 }
@@ -989,6 +994,7 @@ async function loadPostLCP(config) {
     import('../features/personalization/preview.js')
       .then(({ default: decoratePreviewMode }) => decoratePreviewMode());
   }
+  window.lazyloadedFn[0][0](window.lazyloadedFn[0][1]);
 }
 
 export function scrollToHashedElement(hash) {
