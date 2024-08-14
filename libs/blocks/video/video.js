@@ -31,6 +31,8 @@ const loadVideo = (a) => {
 
 function loadDelayedvideo(a, elem) {
   setTimeout(() => {
+    console.log(elem);
+    console.log(a);
     if (!elem.querySelector('a')) elem.appendChild(a);
     loadVideo(a);
   }, 2000);
@@ -41,13 +43,15 @@ export default function init(elem) {
   if(elem.nodeName !== 'A') a = elem.querySelector('a');
   a.classList.add('hide-video');
   if (a.textContent.includes('no-lazy')) {
-    loadDelayedvideo(a, elem);
+    loadvideo(a);
     // window.lazyloadedFn.push([loadVideo, a]) //1
+  } else if (a.classList.contains('delay-video')) {
+    loadDelayedvideo(a, elem);
   } else {
     createIntersectionObserver({
       el: a,
       options: { rootMargin: `${ROOT_MARGIN}px` },
-      callback: loadDelayedvideo.bind(null, a, elem),
+      callback: loadVideo,
     });
   }
 }
