@@ -622,7 +622,7 @@ export function decorateAutoBlock(a) {
 
 const decorateCopyLink = (a, evt) => {
   const userAgent = navigator.userAgent.toLowerCase();
-  const isMobile = /android|webos|iphone|ipad|mobile|iemobile|safari|touch/.test(userAgent);
+  const isMobile = /android|webos|iphone|ipad|mobile|iemobile|touch/.test(userAgent);
   if (!isMobile || !navigator.share) {
     a.remove();
     return;
