@@ -638,6 +638,15 @@ const decorateCopyLink = (a, evt) => {
   });
 };
 
+async function decorateQuickLink(a, evt) {
+  // const link = a.href.replace(evt, '');
+  const { getECID } = await import('../blocks/mobile-app-banner/mobile-app-banner.js');
+  const ecid = await getECID();
+  console.log('ECID is:', ecid);
+  a.href = a.href.replace(evt, `?ecid=${ecid}`);
+  console.log(a);
+}
+
 export function decorateLinks(el) {
   const config = getConfig();
   decorateImageLinks(el);
@@ -677,6 +686,10 @@ export function decorateLinks(el) {
     const copyEvent = '#_evt-copy';
     if (a.href.includes(copyEvent)) {
       decorateCopyLink(a, copyEvent);
+    }
+    const branchQuickLink = '#_evt-quick-link';
+    if (a.href.includes(branchQuickLink)) {
+      decorateQuickLink(a, branchQuickLink);
     }
     return rdx;
   }, []);
