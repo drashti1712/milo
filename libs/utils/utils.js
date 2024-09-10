@@ -622,11 +622,25 @@ export function decorateAutoBlock(a) {
 
 const decorateCopyLink = (a, evt) => {
   const userAgent = navigator.userAgent.toLowerCase();
-  const isMobile = /android|webos|iphone|ipad|mobile|iemobile|touch/.test(userAgent);
-  if (!isMobile || !navigator.share) {
+  // const width = window.innerWidth;
+  // const height = window.innerHeight;
+  // const isTablet = (width >= 768 && width <= 1024) && (height >= 768 && height <= 1366);
+  // console.log('Tablet', isTablet);
+  // const isMobile = /android|webos|iphone|ipad|mobile|iemobile|touch/.test(userAgent);
+  // console.log('Mobile', isMobile);
+  // if (!(isMobile || isTablet) || !navigator.share) {
+  //   a.remove();
+  //   return;
+  // }
+  const isIpadSafari = /safari/.test(userAgent) && !/(chrome|edg|firefox)/.test(userAgent) && navigator.maxTouchPoints > 1;
+  console.log('isIpadSafari', isIpadSafari);
+  const isMobile = /android|webos|iphone|ipad|iemobile|opera mini|touch/i.test(userAgent);
+  console.log('Mobile', isMobile);
+  if ((!isMobile && !isIpadSafari) || !navigator.share) {
     a.remove();
     return;
   }
+
   const link = a.href.replace(evt, '');
   const isConButton = ['EM', 'STRONG'].includes(a.parentElement.nodeName)
     || a.classList.contains('con-button');
