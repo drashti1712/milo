@@ -639,12 +639,17 @@ const decorateCopyLink = (a, evt) => {
 };
 
 async function decorateQuickLink(a, evt) {
-  // const link = a.href.replace(evt, '');
-  const { getECID } = await import('../blocks/mobile-app-banner/mobile-app-banner.js');
-  const ecid = await getECID();
-  console.log('ECID is:', ecid);
-  a.href = a.href.replace(evt, `?ecid=${ecid}`);
-  console.log(a);
+  let ecid = null;
+  if (!window.alloy) return;
+  try {
+    const data = await window.alloy('getIdentity');
+    ecid = data?.identity?.ECID;
+    console.log('ECID is:', ecid);
+    a.href = a.href.replace(evt, `?ecid=${ecid}`);
+    window.open(a.href, '_blank')
+  } catch (e) { 
+    window.lana.log(`Error fetching ECID: ${err}`);
+  }
 }
 
 export function decorateLinks(el) {
@@ -689,7 +694,10 @@ export function decorateLinks(el) {
     }
     const branchQuickLink = '#_evt-quick-link';
     if (a.href.includes(branchQuickLink)) {
-      decorateQuickLink(a, branchQuickLink);
+      a.addEventListener('click', (e) => {
+        e.preventDefault();
+        decorateQuickLink(a, branchQuickLink);
+      });
     }
     return rdx;
   }, []);
