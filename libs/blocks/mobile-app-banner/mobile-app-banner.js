@@ -75,8 +75,22 @@ async function branchInit(key) {
     });
 }
 
+async function quickLinkInit(el) {
+  console.log('this is a quick link');
+  const ecid = await getECID();
+  console.log('ecid for quick link: ', ecid);
+  const aTag = el.previousElementSibling.querySelector('a[href*="app.link"]');
+  aTag.href = aTag.href.concat(`?ecid=${ecid}`);
+}
+
 /* eslint-enable */
 export default async function init(el) {
+  console.log(el);
+  console.log(el.classList);
+  if (el.classList.contains('quick-links')) {
+    quickLinkInit(el);
+    return;
+  }
   const header = document.querySelector('.global-navigation');
   if (!header || header.classList.contains('has-promo')) return;
   const classListArray = Array.from(el.classList);
