@@ -649,6 +649,7 @@ async function decorateQuickLink(a) {
     // const link = a.getAttribute('href');
     // window.open(link, '_blank');
     window.open(a.href, '_blank');
+    // window.open(a.href, '_blank');
   } catch (e) { 
     window.lana.log(`Error fetching ECID: ${err}`);
   }
@@ -696,9 +697,9 @@ export function decorateLinks(el) {
     }
     const branchQuickLink = 'app.link';
     if (a.href.includes(branchQuickLink)) {
-      a.addEventListener('click', (e) => {
+      a.addEventListener('click', async (e) => {
         e.preventDefault();
-        decorateQuickLink(a);
+        await decorateQuickLink(a);
       });
     }
     return rdx;
