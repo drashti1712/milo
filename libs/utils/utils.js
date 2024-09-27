@@ -646,9 +646,8 @@ async function decorateQuickLink(a, evt) {
     ecid = data?.identity?.ECID;
     console.log('ECID is:', ecid);
     a.href = a.href.concat(`?ecid=${ecid}`);
-    setTimeout(() => {
-      window.open(a.href, '_blank');
-  }, 10);
+    const link = a.getAttribute('data-href'); // Get the href from the data attribute
+    window.open(link, '_blank');
     // window.open(a.href, '_blank')
   } catch (e) { 
     window.lana.log(`Error fetching ECID: ${err}`);
