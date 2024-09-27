@@ -646,7 +646,10 @@ async function decorateQuickLink(a, evt) {
     ecid = data?.identity?.ECID;
     console.log('ECID is:', ecid);
     a.href = a.href.replace(evt, `?ecid=${ecid}`);
-    window.open(a.href, '_blank')
+    setTimeout(() => {
+      window.open(a.href, '_blank');
+  }, 10);
+    // window.open(a.href, '_blank')
   } catch (e) { 
     window.lana.log(`Error fetching ECID: ${err}`);
   }
@@ -692,7 +695,7 @@ export function decorateLinks(el) {
     if (a.href.includes(copyEvent)) {
       decorateCopyLink(a, copyEvent);
     }
-    const branchQuickLink = '#_evt-quick-link';
+    const branchQuickLink = 'app.link';
     if (a.href.includes(branchQuickLink)) {
       a.addEventListener('click', (e) => {
         e.preventDefault();
