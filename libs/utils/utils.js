@@ -646,7 +646,7 @@ async function decorateQuickLink(a, evt) {
     ecid = data?.identity?.ECID;
     console.log('ECID is:', ecid);
     a.href = a.href.concat(`?ecid=${ecid}`);
-    const link = a.getAttribute('data-href'); // Get the href from the data attribute
+    const link = a.getAttribute('href'); // Get the href from the data attribute
     window.open(link, '_blank');
     // window.open(a.href, '_blank')
   } catch (e) { 
