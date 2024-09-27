@@ -638,7 +638,7 @@ const decorateCopyLink = (a, evt) => {
   });
 };
 
-async function decorateQuickLink(a, evt) {
+async function decorateQuickLink(a) {
   let ecid = null;
   if (!window.alloy) return;
   try {
@@ -646,9 +646,9 @@ async function decorateQuickLink(a, evt) {
     ecid = data?.identity?.ECID;
     console.log('ECID is:', ecid);
     if(!a.href.includes('ecid')) a.href = a.href.concat(`?ecid=${ecid}`);
-    const link = a.getAttribute('href');
-    window.open(link, '_blank');
-    // window.open(a.href, '_blank')
+    // const link = a.getAttribute('href');
+    // window.open(link, '_blank');
+    window.open(a.href, '_blank');
   } catch (e) { 
     window.lana.log(`Error fetching ECID: ${err}`);
   }
@@ -698,7 +698,7 @@ export function decorateLinks(el) {
     if (a.href.includes(branchQuickLink)) {
       a.addEventListener('click', (e) => {
         e.preventDefault();
-        decorateQuickLink(a, branchQuickLink);
+        decorateQuickLink(a);
       });
     }
     return rdx;
