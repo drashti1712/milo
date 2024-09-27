@@ -645,7 +645,7 @@ async function decorateQuickLink(a, evt) {
     const data = await window.alloy('getIdentity');
     ecid = data?.identity?.ECID;
     console.log('ECID is:', ecid);
-    a.href = a.href.replace(evt, `?ecid=${ecid}`);
+    a.href = a.href.concat(`?ecid=${ecid}`);
     setTimeout(() => {
       window.open(a.href, '_blank');
   }, 10);
