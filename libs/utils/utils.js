@@ -639,10 +639,10 @@ const decorateCopyLink = (a, evt) => {
 };
 
 async function decorateQuickLink(a) {
-  const cookieGrp = window.adobePrivacy?.activeCookieGroups();
-  console.log(cookieGrp);
-  const performanceCookieConsent = cookieGrp.includes('C0002');
-  const advertisingCookieConsent = cookieGrp.includes('C0004');
+  // const cookieGrp = window.adobePrivacy?.activeCookieGroups();
+  // console.log(cookieGrp);
+  // const performanceCookieConsent = cookieGrp.includes('C0002');
+  // const advertisingCookieConsent = cookieGrp.includes('C0004');
   let ecid = null;
   if (!window.alloy) return;
   try {
@@ -695,6 +695,8 @@ export function decorateLinks(el) {
     if (a.href.includes(copyEvent)) {
       decorateCopyLink(a, copyEvent);
     }
+    const cookieGrp = window.adobePrivacy?.activeCookieGroups();
+    console.log(cookieGrp);
     const branchQuickLink = 'app.link';
     if (a.href.includes(branchQuickLink)) {
       a.addEventListener('click', (e) => {
