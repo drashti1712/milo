@@ -639,20 +639,18 @@ const decorateCopyLink = (a, evt) => {
 };
 
 async function decorateQuickLink(a) {
-  // const cookieGrp = window.adobePrivacy?.activeCookieGroups();
-  // console.log(cookieGrp);
-  // const performanceCookieConsent = cookieGrp.includes('C0002');
-  // const advertisingCookieConsent = cookieGrp.includes('C0004');
-  let ecid = null;
   if (!window.alloy) return;
-  try {
-    const data = await window.alloy('getIdentity');
-    ecid = data?.identity?.ECID;
-    if(!a.href.includes('ecid')) a.href = a.href.concat(`?ecid=${ecid}`);
+  const { getECID } = await import('../blocks/mobile-app-banner/mobile-app-banner.js');
+  const ecid = await getECID();
+  window.addEventListener('adobePrivacy:PrivacyConsent',async ()=>{
+    const cookieGrp = window.adobePrivacy?.activeCookieGroups();
+    const performanceCookieConsent = cookieGrp.includes('C0002');
+    const advertisingCookieConsent = cookieGrp.includes('C0004');
+    if(performanceCookieConsent 
+      && advertisingCookieConsent 
+      && !a.href.includes('ecid')) a.href = a.href.concat(`?ecid=${ecid}`);
     window.open(a.href, '_blank');
-  } catch (e) { 
-    window.lana.log(`Error fetching ECID: ${err}`);
-  }
+  }, { once: true });
 }
 
 export function decorateLinks(el) {
@@ -695,8 +693,6 @@ export function decorateLinks(el) {
     if (a.href.includes(copyEvent)) {
       decorateCopyLink(a, copyEvent);
     }
-    const cookieGrp = window.adobePrivacy?.activeCookieGroups();
-    console.log(cookieGrp);
     const branchQuickLink = 'app.link';
     if (a.href.includes(branchQuickLink)) {
       a.addEventListener('click', (e) => {
