@@ -642,7 +642,7 @@ async function decorateQuickLink(a) {
   if (!window.alloy) return;
   const { getECID } = await import('../blocks/mobile-app-banner/mobile-app-banner.js');
   const ecid = await getECID();
-  window.addEventListener('adobePrivacy:PrivacyConsent',async ()=>{
+  window.addEventListener('adobePrivacy:PrivacyConsent', ()=>{
     const cookieGrp = window.adobePrivacy?.activeCookieGroups();
     const performanceCookieConsent = cookieGrp.includes('C0002');
     const advertisingCookieConsent = cookieGrp.includes('C0004');
