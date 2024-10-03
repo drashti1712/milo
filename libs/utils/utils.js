@@ -642,15 +642,18 @@ async function decorateQuickLink(a) {
   if (!window.alloy) return;
   const { getECID } = await import('../blocks/mobile-app-banner/mobile-app-banner.js');
   const ecid = await getECID();
-  window.addEventListener('adobePrivacy:PrivacyConsent', ()=>{
-    const cookieGrp = window.adobePrivacy?.activeCookieGroups();
-    const performanceCookieConsent = cookieGrp.includes('C0002');
-    const advertisingCookieConsent = cookieGrp.includes('C0004');
-    if(performanceCookieConsent 
-      && advertisingCookieConsent 
-      && !a.href.includes('ecid')) a.href = a.href.concat(`?ecid=${ecid}`);
+  if (window.cookieConsent === undefined || !window.adobePrivacy) {
+    window.addEventListener('adobePrivacy:PrivacyConsent',async ()=>{
+      const cookieGrp = window.adobePrivacy?.activeCookieGroups();
+      window.cookieConsent = cookieGrp.includes('C0002') && cookieGrp.includes('C0004');
+      if(window.cookieConsent && !a.href.includes('ecid')) a.href = a.href.concat(`?ecid=${ecid}`);
+      window.open(a.href, '_blank');
+    }, { once: true });
+  } else {
+    console.log('cookie consent', window.cookieConsent);
+    if(window.cookieConsent && !a.href.includes('ecid')) a.href = a.href.concat(`?ecid=${ecid}`);
     window.open(a.href, '_blank');
-  }, { once: true });
+  }
 }
 
 export function decorateLinks(el) {
@@ -695,6 +698,12 @@ export function decorateLinks(el) {
     }
     const branchQuickLink = 'app.link';
     if (a.href.includes(branchQuickLink)) {
+      if (window.cookieConsent === undefined || !window.adobePrivacy) {
+        window.addEventListener('adobePrivacy:PrivacyConsent',async ()=>{
+          const cookieGrp = window.adobePrivacy?.activeCookieGroups();
+          window.cookieConsent = cookieGrp.includes('C0002') && cookieGrp.includes('C0004');
+        });
+      }
       a.addEventListener('click', (e) => {
         e.preventDefault();
         decorateQuickLink(a);
