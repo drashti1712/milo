@@ -638,19 +638,30 @@ const decorateCopyLink = (a, evt) => {
   });
 };
 
+async function appendURLwithECID(a) {
+  console.log("append event found", window.adobePrivacy);
+  if (!window.alloy) return;
+  const { getECID } = await import('../blocks/mobile-app-banner/mobile-app-banner.js');
+  const ecid = await getECID();
+  const cookieGrp = window.adobePrivacy?.activeCookieGroups();
+  const performanceCookieConsent = cookieGrp.includes('C0002');
+  const advertisingCookieConsent = cookieGrp.includes('C0004');
+  if(performanceCookieConsent 
+    && advertisingCookieConsent 
+    && !a.href.includes('ecid')) a.href = a.href.concat(`?ecid=${ecid}`);
+  // window.open(a.href, '_blank');
+}
+
 async function decorateQuickLink(a) {
   if (!window.alloy) return;
   const { getECID } = await import('../blocks/mobile-app-banner/mobile-app-banner.js');
   const ecid = await getECID();
-  window.addEventListener('adobePrivacy:PrivacyConsent', ()=>{
-    const cookieGrp = window.adobePrivacy?.activeCookieGroups();
-    const performanceCookieConsent = cookieGrp.includes('C0002');
-    const advertisingCookieConsent = cookieGrp.includes('C0004');
-    if(performanceCookieConsent 
-      && advertisingCookieConsent 
-      && !a.href.includes('ecid')) a.href = a.href.concat(`?ecid=${ecid}`);
+  if (window.adobePrivacy?.hasUserProvidedConsent()) return openURLwithECID(a, ecid);
+  if (window.adobePrivacy && !window.adobePrivacy?.hasUserProvidedConsent()) return window.open(a.href, '_blank');
+  window.addEventListener('adobePrivacy:PrivacyConsent', () => {
+    if (window.adobePrivacy.hasUserProvidedConsent()) return openURLwithECID(a, ecid);
     window.open(a.href, '_blank');
-  }, { once: true });
+  });
 }
 
 export function decorateLinks(el) {
@@ -693,11 +704,88 @@ export function decorateLinks(el) {
     if (a.href.includes(copyEvent)) {
       decorateCopyLink(a, copyEvent);
     }
-    const branchQuickLink = 'app.link';
-    if (a.href.includes(branchQuickLink)) {
-      a.addEventListener('click', (e) => {
-        e.preventDefault();
-        decorateQuickLink(a);
+
+    //using promise to first check privacy events and then add click handler
+
+    // const branchQuickLin = 'a';
+    // if (a.href.includes(branchQuickLin)) {
+    //   let r = null;
+    //   const x = new Promise((res, rej) => r = res);
+    //   window.addEventListener('adobePrivacy:PrivacyConsent', async () => {
+    //     await appendURLwithECID(a);
+    //     r();
+    //     console.log("myline: ecid added");
+    //   });
+    //   a.addEventListener('click', async (e) => {
+    //     e.preventDefault();
+    //     console.log("myline: waiting");
+    //     await x;
+    //     console.log("myline: resolved");
+    //     window.open(a.href, '_blank');
+    //   });
+    // }
+
+    // using another link to store ecid
+
+    // const branchQuickLink = 'app.link';
+    // let isClicked = false;
+    // if (a.href.includes(branchQuickLink)) {
+    //   console.log("privacy handler")
+    //   window.addEventListener('adobePrivacy:PrivacyConsent', async () => {
+    //     console.log('Privacy data loaded');
+    //     const cookieGrp = window.adobePrivacy?.activeCookieGroups();
+    //     const performanceCookieConsent = cookieGrp.includes('C0002');
+    //     const advertisingCookieConsent = cookieGrp.includes('C0004');
+    //     if(isClicked && performanceCookieConsent && advertisingCookieConsent) {
+    //       a.href = a.href.concat('?ecid=123456');
+    //       console.log(a.href.concat('?ecid=123456'));
+    //       console.log(a);
+    //       console.log("a is clicked")
+    //       a.click();
+    //     }
+    //     // await appendURLwithECID(a);
+    //   });
+    //   a.addEventListener('click', async (e) => {
+    //     console.log('a click handler');
+    //     e.preventDefault();
+    //     // add ecid to a.href after 5 sec
+    //     console.log(isClicked, "=-=")
+    //     // if (!isClicked) {
+    //       window.open(a.href, '_blank');
+    //     // }
+    //     isClicked = true;
+    //   });
+    // }
+
+    // using Branch QL api to update the QL after click
+    const bLink = 'app.link';
+    if (a.href.includes(bLink)) {
+      if (!window.alloy) return;
+      window.addEventListener('adobePrivacy:PrivacyConsent', async () => {
+        // const { getECID } = await import('../blocks/mobile-app-banner/mobile-app-banner.js');
+        // const ecidValue = await getECID();
+        // console.log('ECID set: ', ecidValue);
+        const cookieGrp = window.adobePrivacy?.activeCookieGroups();
+        const performanceCookieConsent = cookieGrp.includes('C0002');
+        const advertisingCookieConsent = cookieGrp.includes('C0004');
+        if(performanceCookieConsent && advertisingCookieConsent) {
+          const options = {
+            method: 'PUT',
+            headers: {accept: 'application/json', 'content-type': 'application/json'},
+            body: JSON.stringify({
+              data: {
+                ecid: '12345'
+              },
+              branch_key: 'key_test_eaNdoH8nTxeZXfOsgkELrjgpFrhm4q2m',
+              branch_secret: 'secret_test_aJ7HZdM5RqXdjA2vEJFQ3q0qlmtxQAmT'
+            })
+          };
+          
+          fetch('https://api2.branch.io/v1/url?url=https%3A%2F%2Flightroom.test-app.link%2FU26PImxk8Jb', options)
+            .then(response => response.json())
+            .then(response => console.log('API call to update link data: ', response))
+            .catch(err => console.error(err));
+        }
       });
     }
     return rdx;
@@ -1267,6 +1355,9 @@ async function processSection(section, config, isDoc) {
 }
 
 export async function loadArea(area = document) {
+  await window.addEventListener('adobePrivacy:PrivacyConsent', () => {
+    window.globalPrivacyFlag = true;
+  });
   const isDoc = area === document;
 
   if (isDoc) {

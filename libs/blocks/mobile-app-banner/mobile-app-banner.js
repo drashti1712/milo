@@ -15,10 +15,13 @@ async function getKey(product) {
 
 export async function getECID() {
   let ecid = null;
-  if (window.alloy) {
-    await window.alloy('getIdentity').then((data) => {
-      ecid = data?.identity?.ECID;
-    }).catch((err) => window.lana.log(`Error fetching ECID: ${err}`, { tags: 'errorType=error,module=mobile-app-banner' }));
+  if (!window.alloy) return;
+  try {
+    const data = await window.alloy('getIdentity');
+    ecid = data?.identity?.ECID;
+  }
+  catch {
+    window.lana.log(`Error fetching ECID: `, { tags: 'errorType=error,module=mobile-app-banner' });
   }
   return ecid;
 }
