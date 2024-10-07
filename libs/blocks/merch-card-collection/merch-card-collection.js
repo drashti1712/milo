@@ -1,3 +1,4 @@
+import { overrideUrlOrigin } from '../../utils/helpers.js';
 import {
   createTag, decorateLinks, getConfig, loadBlock, loadStyle, localizeLink,
 } from '../../utils/utils.js';
@@ -57,10 +58,10 @@ async function getCardsRoot(config, html) {
 }
 
 const fetchOverrideCard = (action, config) => new Promise((resolve, reject) => {
-  fetch(`${localizeLink(action?.target, config)}.plain.html`).then((res) => {
+  fetch(`${localizeLink(overrideUrlOrigin(action?.content))}.plain.html`).then((res) => {
     if (res.ok) {
       res.text().then((cardContent) => {
-        const response = { path: action.target, cardContent: /^<div>(.*)<\/div>$/.exec(cardContent.replaceAll('\n', ''))[1] };
+        const response = { path: action.content, cardContent: /^<div>(.*)<\/div>$/.exec(cardContent.replaceAll('\n', ''))[1] };
         if (config?.mep?.preview) response.manifestId = action.manifestId;
         resolve(response);
       });
