@@ -4,6 +4,7 @@ import sinon from 'sinon';
 import { waitFor, waitForElement } from '../../helpers/waitfor.js';
 
 import { setConfig, createTag } from '../../../libs/utils/utils.js';
+import { decorateAnchorVideo } from '../../../libs/utils/decorate.js';
 
 setConfig({});
 const { default: init } = await import('../../../libs/blocks/video/video.js');
@@ -17,10 +18,20 @@ describe('video uploaded using franklin bot', () => {
     document.body.innerHTML = '';
   });
 
-  it('decorates video', (done) => {
+  it('removes the element, if it does not have a parent node', (done) => {
     const anchor = createTag('a');
     anchor.remove = () => done();
     init(anchor);
+  });
+
+  it('does not do anything, if the element is not a valid htmlEl', () => {
+    expect(() => {
+      decorateAnchorVideo({ anchorTag: undefined });
+    }).not.to.throw();
+
+    expect(() => {
+      decorateAnchorVideo({ src: 'some-length', anchorTag: undefined });
+    }).not.to.throw();
   });
 
   it('decorates video', async () => {

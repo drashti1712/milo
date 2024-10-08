@@ -1,4 +1,6 @@
-import { createTag, createIntersectionObserver } from './utils.js';
+import { createTag, loadStyle, getConfig, createIntersectionObserver } from './utils.js';
+
+const { miloLibs, codeRoot } = getConfig();
 
 export function decorateButtons(el, size) {
   const buttons = el.querySelectorAll('em a, strong a, p > a strong');
@@ -47,8 +49,11 @@ export function decorateIconStack(el) {
     const picIndex = links[0].querySelector('a picture') ? 0 : 1;
     const linkImg = links[picIndex];
     const linkText = links[1 - picIndex];
-    linkText.prepend(linkImg.querySelector('picture'));
-    linkImg.remove();
+    const linkPic = linkImg.querySelector('picture');
+    if (linkPic) {
+      linkText.prepend(linkPic);
+      linkImg.remove();
+    }
   });
 }
 
@@ -308,9 +313,21 @@ export function decorateMultiViewport(el) {
   return foreground;
 }
 
-export function decorateAnchorVideo({ src, anchorTag }) {
+export async function loadCDT(el, classList) {
+  try {
+    await Promise.all([
+      loadStyle(`${miloLibs || codeRoot}/features/cdt/cdt.css`),
+      import('../features/cdt/cdt.js')
+        .then(({ default: initCDT }) => initCDT(el, classList)),
+    ]);
+  } catch (error) {
+    window.lana?.log(`WARN: Failed to load countdown timer: ${error}`, { tags: 'errorType=warn,module=countdown-timer' });
+  }
+}
+
+export function decorateAnchorVideo({ src = '', anchorTag }) {
   if (!src.length || !(anchorTag instanceof HTMLElement)) return;
-  if (anchorTag.closest('.marquee, .aside, .hero-marquee') && !anchorTag.hash) anchorTag.hash = '#autoplay';
+  if (anchorTag.closest('.marquee, .aside, .hero-marquee, .quiz-marquee') && !anchorTag.hash) anchorTag.hash = '#autoplay';
   const { dataset, parentElement } = anchorTag;
   const video = `<video ${getVideoAttrs(anchorTag.hash, dataset)} data-video-source=${src}></video>`;
   anchorTag.insertAdjacentHTML('afterend', video);
