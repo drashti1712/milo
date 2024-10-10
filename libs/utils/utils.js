@@ -660,15 +660,24 @@ export function convertStageLinks({ anchors, config, hostname }) {
   });
 }
 
+function addLoader(elem) {
+  const overlay = createTag('div', { class: 'overlay'});
+  const loader = createTag('div', { class: 'loader'});
+  overlay.append(loader);
+  elem.prepend(overlay);
+}
+
 async function decorateQuickLink(a) {
   if (!window.alloy) return;
   const { getECID } = await import('../blocks/mobile-app-banner/mobile-app-banner.js');
   const ecid = await getECID();
   if (window.cookieConsent === undefined || !window.adobePrivacy) {
-    window.addEventListener('adobePrivacy:PrivacyConsent',async ()=>{
+    a.querySelector('.overlay').style.display='block';
+    window.addEventListener('adobePrivacy:PrivacyConsent', ()=>{
       const cookieGrp = window.adobePrivacy?.activeCookieGroups();
       window.cookieConsent = cookieGrp.includes('C0002') && cookieGrp.includes('C0004');
       if(window.cookieConsent && !a.href.includes('ecid')) a.href = a.href.concat(`?ecid=${ecid}`);
+      a.querySelector('.overlay').style.display='none';
       window.open(a.href, '_blank');
     }, { once: true });
   } else {
@@ -718,8 +727,9 @@ export function decorateLinks(el) {
     }
     const branchQuickLink = 'app.link';
     if (a.href.includes(branchQuickLink)) {
+      addLoader(a);
       if (window.cookieConsent === undefined || !window.adobePrivacy) {
-        window.addEventListener('adobePrivacy:PrivacyConsent',async ()=>{
+        window.addEventListener('adobePrivacy:PrivacyConsent', () => {
           const cookieGrp = window.adobePrivacy?.activeCookieGroups();
           window.cookieConsent = cookieGrp.includes('C0002') && cookieGrp.includes('C0004');
         });
