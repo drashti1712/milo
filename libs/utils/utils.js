@@ -661,21 +661,15 @@ export function convertStageLinks({ anchors, config, hostname }) {
 }
 
 async function decorateQuickLink(a) {
+  console.log('Adobe privacy cookies:', window.adobePrivacy.activeCookieGroups());
   if (!window.alloy) return;
   const { getECID } = await import('../blocks/mobile-app-banner/mobile-app-banner.js');
   const ecid = await getECID();
-  if (window.cookieConsent === undefined || !window.adobePrivacy) {
-    window.addEventListener('adobePrivacy:PrivacyConsent',async ()=>{
-      const cookieGrp = window.adobePrivacy?.activeCookieGroups();
-      window.cookieConsent = cookieGrp.includes('C0002') && cookieGrp.includes('C0004');
-      if(window.cookieConsent && !a.href.includes('ecid')) a.href = a.href.concat(`?ecid=${ecid}`);
-      window.open(a.href, '_blank');
-    }, { once: true });
-  } else {
-    console.log('cookie consent', window.cookieConsent);
-    if(window.cookieConsent && !a.href.includes('ecid')) a.href = a.href.concat(`?ecid=${ecid}`);
-    window.open(a.href, '_blank');
-  }
+  console.log('ECID value:', ecid);
+  const cookieGrp = window.adobePrivacy?.activeCookieGroups();
+  const requiredConsent = cookieGrp.includes('C0002') && cookieGrp.includes('C0004');
+  if(requiredConsent && !a.href.includes('ecid')) a.href = a.href.concat(`?ecid=${ecid}`);
+  window.open(a.href, '_blank');
 }
 
 export function decorateLinks(el) {
@@ -718,12 +712,6 @@ export function decorateLinks(el) {
     }
     const branchQuickLink = 'app.link';
     if (a.href.includes(branchQuickLink)) {
-      if (window.cookieConsent === undefined || !window.adobePrivacy) {
-        window.addEventListener('adobePrivacy:PrivacyConsent',async ()=>{
-          const cookieGrp = window.adobePrivacy?.activeCookieGroups();
-          window.cookieConsent = cookieGrp.includes('C0002') && cookieGrp.includes('C0004');
-        });
-      }
       a.addEventListener('click', (e) => {
         e.preventDefault();
         decorateQuickLink(a);
@@ -1242,7 +1230,7 @@ async function documentPostSectionLoading(config) {
   initSidekick();
 
   const { default: delayed } = await import('../scripts/delayed.js');
-  delayed([getConfig, getMetadata, loadScript, loadStyle, loadIms]);
+  delayed([getConfig, getMetadata, loadScript, loadStyle, loadIms]); //delayed called here
 
   import('../martech/attributes.js').then((analytics) => {
     document.querySelectorAll('main > div').forEach((section, idx) => analytics.decorateSectionAnalytics(section, idx, config));
@@ -1282,6 +1270,14 @@ async function resolveInlineFrags(section) {
   section.preloadLinks = newlyDecoratedSection.preloadLinks;
 }
 
+async function preloadPrivacy() {
+  if(document.querySelector('a[href*="app.link"')) {
+    loadScript('https://www.adobe.com/etc.clientlibs/globalnav/clientlibs/base/privacy-standalone.js');
+    const { loadPrivacy } = await import('../scripts/delayed.js');
+    await loadPrivacy(getConfig, loadScript);
+  }
+}
+
 async function processSection(section, config, isDoc) {
   await resolveInlineFrags(section);
   const firstSection = section.el.dataset.idx === '0';
@@ -1290,6 +1286,7 @@ async function processSection(section, config, isDoc) {
   await Promise.all([
     decoratePlaceholders(section.el, config),
     decorateIcons(section.el, config),
+    preloadPrivacy(),
   ]);
   const loadBlocks = [...stylePromises];
   if (section.preloadLinks.length) {

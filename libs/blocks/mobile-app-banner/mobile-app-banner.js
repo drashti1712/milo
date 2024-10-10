@@ -14,7 +14,7 @@ async function getKey(product) {
 }
 
 export async function getECID() {
-  let ecid = '1234';
+  let ecid = null;
   if (window.alloy) {
     await window.alloy('getIdentity').then((data) => {
       ecid = data?.identity?.ECID;
