@@ -626,10 +626,20 @@ export function decorateAutoBlock(a) {
 }
 
 const decorateCopyLink = (a, evt) => {
-  const userAgent = navigator.userAgent.toLowerCase();
-  const isMobile = (screen.orientation.type.includes('portrait') && window.innerWidth < 1200)
-  || /android|iphone|mobile|ipad/.test(userAgent);
-  if (!isMobile || !navigator.share) {
+  // const userAgent = navigator.userAgent.toLowerCase();
+  // const isTabletLandscape = () => {
+  //   const TABLET_SIZE = 1200; // You can adjust this based on your definition of tablet size
+  //   console.log('a', window.matchMedia('(orientation: landscape)').matches);
+  //   console.log('b', window.innerWidth <= TABLET_SIZE);
+  //   console.log('c', !/mac/.test(userAgent));
+  //   return window.matchMedia('(orientation: landscape)').matches && window.innerWidth <= TABLET_SIZE && !/mac/.test(userAgent);
+  // };
+  // const isMobile = (screen.orientation.type.includes('portrait') && window.innerWidth < 1200)
+  // || /android|iphone|mobile|ipad/.test(userAgent)
+  // || isTabletLandscape();
+  // console.log(isTabletLandscape());
+  // if (!isMobile || !navigator.share) {
+    if (!navigator.share) {
     a.remove();
     return;
   }

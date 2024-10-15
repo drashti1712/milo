@@ -963,9 +963,16 @@ a.static:hover {
   /* margin */
   .con-block.margin-top-desktop { margin-top: var(--spacing-s); }
   .con-block.margin-bottom-desktop { margin-bottom: var(--spacing-s); }
+
+  .copy-link {
+    display: none;
+  }
 }
 
 /* desktop large < 1440 */
 @media screen and (min-width: 1440px) {
   .con-block.max-width-12-desktop-large .foreground { max-width: 1200px; }
+  .copy-link {
+    display: none;
+  }
 }
