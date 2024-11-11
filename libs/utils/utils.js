@@ -666,11 +666,25 @@ export function convertStageLinks({ anchors, config, hostname, href }) {
   });
 }
 
-function addLoader(elem) {
-  const overlay = createTag('div', { class: 'overlay'});
-  const loader = createTag('div', { class: 'loader'});
-  overlay.append(loader);
-  elem.prepend(overlay);
+function addProgressBar(elem) {
+  const container = createTag('div', {class: 'progress-bar-container'});
+  const progressBar = createTag("div", {class: 'progress-bar'});
+
+  const label = createTag("div", {class: 'progress-label'});
+  label.textContent = " Loading...";
+  container.append(label);
+
+  const track = createTag("div", {class: 'progress-bar-value'});
+
+  progressBar.append(track);
+  container.append(progressBar)
+  console.log(progressBar);
+  elem.replaceWith(container);
+  return container;
+}
+
+function removeProgressBar(elem, a) {
+  elem.replaceWith(a);
 }
 
 async function decorateQuickLink(a) {
@@ -678,12 +692,15 @@ async function decorateQuickLink(a) {
   const { getECID } = await import('../blocks/mobile-app-banner/mobile-app-banner.js');
   const ecid = await getECID();
   if (window.cookieConsent === undefined || !window.adobePrivacy) {
-    a.querySelector('.overlay').style.display='block';
+    const pb = addProgressBar(a);
+    pb.querySelector('.progress-bar-value').style.display='block';
     window.addEventListener('adobePrivacy:PrivacyConsent', ()=>{
       const cookieGrp = window.adobePrivacy?.activeCookieGroups();
       window.cookieConsent = cookieGrp.includes('C0002') && cookieGrp.includes('C0004');
       if(window.cookieConsent && !a.href.includes('ecid')) a.href = a.href.concat(`?ecid=${ecid}`);
-      a.querySelector('.overlay').style.display='none';
+
+      // replace the loader with the CTA once the privacy event is captured again
+      removeProgressBar(pb, a);
       window.open(a.href, '_blank');
     }, { once: true });
   } else {
@@ -734,7 +751,6 @@ export function decorateLinks(el) {
     }
     const branchQuickLink = 'app.link';
     if (a.href.includes(branchQuickLink)) {
-      addLoader(a);
       if (window.cookieConsent === undefined || !window.adobePrivacy) {
         window.addEventListener('adobePrivacy:PrivacyConsent', () => {
           const cookieGrp = window.adobePrivacy?.activeCookieGroups();
