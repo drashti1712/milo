@@ -679,11 +679,13 @@ async function decorateQuickLink(a) {
   const ecid = await getECID();
   if (window.cookieConsent === undefined || !window.adobePrivacy) {
     a.querySelector('.overlay').style.display='block';
+    a.querySelector('.loader').style.display='block';
     window.addEventListener('adobePrivacy:PrivacyConsent', ()=>{
       const cookieGrp = window.adobePrivacy?.activeCookieGroups();
       window.cookieConsent = cookieGrp.includes('C0002') && cookieGrp.includes('C0004');
       if(window.cookieConsent && !a.href.includes('ecid')) a.href = a.href.concat(`?ecid=${ecid}`);
       a.querySelector('.overlay').style.display='none';
+      a.querySelector('.loader').style.display='none';
       window.open(a.href, '_blank');
     }, { once: true });
   } else {
