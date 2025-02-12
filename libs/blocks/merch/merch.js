@@ -745,6 +745,15 @@ async function buildPrice(el, params) {
   return price;
 }
 
+function addAccessibility(merch, el) {
+  if (merch.dataset.template === PRICE_TEMPLATE_STRIKETHROUGH) {
+    const beforeText = el.previousElementSibling;
+    beforeText.append(beforeText.nextSibling);
+    const afterText = el.nextElementSibling;
+    afterText.append(afterText.nextSibling);
+  }
+}
+
 export default async function init(el) {
   if (!el?.classList?.contains('merch')) return undefined;
   const { searchParams } = new URL(el.href);
@@ -754,6 +763,7 @@ export default async function init(el) {
   log = service.Log.module('merch');
   if (merch) {
     log.debug('Rendering:', { options: { ...merch.dataset }, merch, el });
+    addAccessibility(merch, el);
     el.replaceWith(merch);
     return merch;
   }
