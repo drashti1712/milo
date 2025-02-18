@@ -1416,6 +1416,10 @@ export async function loadArea(area = document) {
 
   const sections = decorateSections(area, isDoc);
 
+  const { loadPrivacy } = await import('../scripts/delayed.js');
+  setTimeout(() => loadPrivacy(getConfig, loadScript), 3000);
+  // loadPrivacy(getConfig, loadScript);
+
   const areaBlocks = [];
   for (const section of sections) {
     const sectionBlocks = await processSection(section, config, isDoc);
