@@ -1236,6 +1236,11 @@ async function checkForPageMods() {
 }
 
 async function loadPostLCP(config) {
+  // privacy here - test 2
+  if (document.querySelector('.quick-link')) {
+    const { loadPrivacy } = await import('../scripts/delayed.js');
+    loadPrivacy(getConfig, loadScript);
+  }
   const { default: loadFavIcon } = await import('./favicon.js');
   loadFavIcon(createTag, getConfig(), getMetadata);
   await decoratePlaceholders(document.body.querySelector('header'), config);
@@ -1267,11 +1272,6 @@ async function loadPostLCP(config) {
   if (config?.mep) {
     import('../features/personalization/personalization.js')
       .then(({ addMepAnalytics }) => addMepAnalytics(config, header));
-  }
-  // privacy here - test 2
-  if (document.querySelector('.quick-link')) {
-    const { loadPrivacy } = await import('../scripts/delayed.js');
-    loadPrivacy(getConfig, loadScript);
   }
 }
 
