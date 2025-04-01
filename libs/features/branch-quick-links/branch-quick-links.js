@@ -70,7 +70,9 @@ export default function processQuickLink(a) {
     e.preventDefault();
     let loader;
     if (getMetadata('quick-link-loader') === 'on') loader = addLoader(a);
-    const hasConsent = await waitForConsent();
+    const cookieGrp = document.cookie.split('; ').find((cookie) => cookie.startsWith('OptanonConsent=')).match(/groups=[^&]+/);
+    const cg = decodeURIComponent(cookieGrp[0]).split('=')[1].split(',');
+    const hasConsent = cg ? cg.some((pair) => pair === 'C0002:1') && cg.some((pair) => pair === 'C0004:1') : await waitForConsent();
     if (loader) loader.replaceWith(a);
     decorateQuickLink(a, hasConsent);
   });
