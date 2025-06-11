@@ -617,6 +617,10 @@
     margin-block-end: 0;
   }
 
+  .notification.ribbon:not(.in-line) [class*="heading-"]:only-child {
+    margin-block-end: 0;
+  }
+
   .notification.center .copy-wrap {
     text-align: start;
   }
