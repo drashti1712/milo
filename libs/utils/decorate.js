@@ -494,7 +494,8 @@ export function decorateAnchorVideo({ src = '', anchorTag }) {
   if (accessibilityEnabled) {
     video = addAccessibilityControl(video, attrs, indexOfVideo, tabIndex);
   }
-  anchorTag.insertAdjacentHTML('afterend', video);
+  const isHiddenMobile = (anchorTag.closest('.hero-marquee').classList.contains('media-hidden-mobile') || anchorTag.closest('.hero-marquee').classList.contains('media-hidden-tablet')) && defineDeviceByScreenSize() === 'mobile';
+  if (!isHiddenMobile) anchorTag.insertAdjacentHTML('afterend', video);
   const videoEl = parentElement.querySelector('video');
   if (indexOfVideo === 1) {
     firstVideo = videoEl;
