@@ -1666,9 +1666,21 @@ export function partition(arr, fn) {
   );
 }
 
+function defineDeviceByScreenSize() {
+  const screenWidth = window.innerWidth;
+  if (screenWidth <= 600) {
+    return 'mobile';
+  }
+  return 'desktop';
+}
+
 const preloadBlockResources = (blocks = []) => blocks.map((block) => {
   if (block.classList.contains('hide-block')) return null;
   const { blockPath, hasStyles, name } = getBlockData(block);
+  const isVideoPosterLink = block.tagName === 'A' && block.hasAttribute('data-video-poster');
+  const ishidden = block.closest('.hero-marquee').classList.contains('media-hidden-mobile') || block.closest('.hero-marquee').classList.contains('media-hidden-tablet');
+  const noMediaLoad = isVideoPosterLink && ishidden && defineDeviceByScreenSize() === 'mobile';
+  if (noMediaLoad) return null;
   if (['marquee', 'hero-marquee'].includes(name)) {
     loadLink(`${getConfig().base}/utils/decorate.js`, { rel: 'preload', as: 'script', crossorigin: 'anonymous' });
   }
