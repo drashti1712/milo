@@ -10,6 +10,7 @@ const MILO_BLOCKS = [
   'adobetv',
   'article-feed',
   'article-header',
+  'artify',
   'aside',
   'author-header',
   'brand-concierge',

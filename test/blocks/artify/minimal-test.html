@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Minimal Artify Test</title>
+  <style>
+    body { 
+      font-family: arial; 
+      margin: 20px; 
+      background: #f8f9fa; 
+    }
+    .console-log {
+      background: #1a1a1a;
+      color: #00ff00;
+      padding: 15px;
+      border-radius: 6px;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      max-height: 300px;
+      overflow-y: auto;
+      margin: 20px 0;
+    }
+  </style>
+</head>
+<body>
+  <h1>🧪 Minimal Artify Upload Test</h1>
+  
+  <div class="console-log" id="console-output">
+    Console output will appear here...
+  </div>
+
+  <div class="artify-minimal">
+    <div></div>
+  </div>
+
+  <script type="module">
+    import { setConfig } from '../../../libs/utils/utils.js';
+    import initMinimal from './minimal-test.js';
+    
+    // Set configuration
+    setConfig({
+      codeRoot: '/libs',
+      locales: { '': { ietf: 'en-US' } },
+      pathname: '/test'
+    });
+
+    // Capture console logs
+    const consoleOutput = document.getElementById('console-output');
+    const originalLog = console.log;
+    const originalError = console.error;
+    
+    function addToConsole(level, ...args) {
+      const message = args.map(arg => 
+        typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)
+      ).join(' ');
+      
+      const line = document.createElement('div');
+      line.style.color = level === 'error' ? '#ff6666' : '#00ff00';
+      line.textContent = `[${level}] ${new Date().toLocaleTimeString()}: ${message}`;
+      consoleOutput.appendChild(line);
+      consoleOutput.scrollTop = consoleOutput.scrollHeight;
+    }
+
+    console.log = (...args) => { originalLog(...args); addToConsole('log', ...args); };
+    console.error = (...args) => { originalError(...args); addToConsole('error', ...args); };
+
+    // Initialize the minimal test
+    console.log('🎯 Starting minimal Artify test...');
+    
+    const artifyEl = document.querySelector('.artify-minimal div');
+    if (artifyEl) {
+      initMinimal(artifyEl);
+      console.log('✅ Minimal test initialized');
+    } else {
+      console.error('❌ Could not find artify element');
+    }
+  </script>
+</body>
+</html>
+

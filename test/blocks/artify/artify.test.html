@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Artify - AI Image Editor Test</title>
+  <link rel="stylesheet" href="../../../libs/styles/styles.css">
+  <link rel="stylesheet" href="../../../libs/blocks/artify/artify.css">
+</head>
+<body>
+  <h1>Artify - AI Image Editor Test</h1>
+  <p>Test the updated Artify app with actual React components and styling</p>
+  
+  <div class="test-section">
+    <h2>Complete Artify Application</h2>
+    <p>Upload an image to test the full application with:</p>
+    <ul>
+      <li><strong>Landing Page:</strong> Banner image with "Add magic and transform your images in one go"</li>
+      <li><strong>Navbar:</strong> ArtifyDoc filename, undo/redo/home buttons, download/share</li>
+      <li><strong>Sidebar:</strong> "Predefined Effects" with actual effect images</li>
+      <li><strong>Main Screen:</strong> 800x500 image area with original/modified toggle</li>
+      <li><strong>Command Prompt:</strong> "Ask Artify" with arrow icon and rounded input</li>
+    </ul>
+    
+    <div class="artify">
+      <div>
+        <!-- Complete Artify App with actual React design -->
+      </div>
+    </div>
+  </div>
+
+  <div class="test-section">
+    <h2>Features to Test</h2>
+    <div class="feature-grid">
+      <div class="feature-card">
+        <h3>🖼️ Landing Page</h3>
+        <p>Banner image with "Choose a photo" button</p>
+        <small>Tests: File upload, banner display, messaging</small>
+      </div>
+      
+      <div class="feature-card">
+        <h3>🎨 Predefined Effects</h3>
+        <p>Sidebar with 6 actual effect thumbnails</p>
+        <small>Tests: Effect grid, image loading, click handlers</small>
+      </div>
+      
+      <div class="feature-card">
+        <h3>💬 Ask Artify</h3>
+        <p>AI prompt input with arrow icon</p>
+        <small>Tests: Natural language processing, loading states</small>
+      </div>
+      
+      <div class="feature-card">
+        <h3>🔄 Toggle View</h3>
+        <p>Switch between original and modified images</p>
+        <small>Tests: State management, toggle functionality</small>
+      </div>
+      
+      <div class="feature-card">
+        <h3>⚡ Navbar Actions</h3>
+        <p>Undo, redo, home, download, share buttons</p>
+        <small>Tests: History management, file operations</small>
+      </div>
+      
+      <div class="feature-card">
+        <h3>📱 Responsive Design</h3>
+        <p>Mobile, tablet, desktop layouts</p>
+        <small>Tests: Media queries, layout adaptation</small>
+      </div>
+    </div>
+  </div>
+
+  <div class="test-section">
+    <h2>AI Prompt Examples</h2>
+    <div class="prompt-examples">
+      <div class="prompt-category">
+        <h4>Basic Adjustments</h4>
+        <ul>
+          <li>"Make it brighter"</li>
+          <li>"Increase the contrast"</li>
+          <li>"More vibrant colors"</li>
+          <li>"Reduce saturation"</li>
+        </ul>
+      </div>
+      
+      <div class="prompt-category">
+        <h4>Artistic Effects</h4>
+        <ul>
+          <li>"Add vintage filter"</li>
+          <li>"Make it black and white"</li>
+          <li>"Apply warm sunset tones"</li>
+          <li>"Cool blue tint"</li>
+        </ul>
+      </div>
+      
+      <div class="prompt-category">
+        <h4>Advanced Edits</h4>
+        <ul>
+          <li>"Blur the background"</li>
+          <li>"Enhance the subject"</li>
+          <li>"Add dramatic lighting"</li>
+          <li>"Remove distractions"</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    body {
+      font-family: 'Adobe Clean', arial, sans-serif;
+      margin: 40px;
+      line-height: 1.6;
+      background: #f8f9fa;
+    }
+    
+    h1 {
+      color: #D459E1;
+      text-align: center;
+      margin-bottom: 10px;
+      font-size: 2.5em;
+    }
+    
+    body > p {
+      text-align: center;
+      color: #6c757d;
+      margin-bottom: 40px;
+      font-size: 1.1em;
+    }
+    
+    .test-section {
+      margin: 40px 0;
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    }
+    
+    .test-section h2 {
+      margin-top: 0;
+      color: #333;
+      border-bottom: 3px solid #D459E1;
+      padding-bottom: 10px;
+      display: inline-block;
+    }
+    
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+    
+    .feature-card {
+      background: linear-gradient(135deg, #fcf1fd 0%, #f8f9fa 100%);
+      padding: 20px;
+      border-radius: 8px;
+      border-left: 4px solid #D459E1;
+      transition: transform 0.2s ease;
+    }
+    
+    .feature-card:hover {
+      transform: translateY(-2px);
+    }
+    
+    .feature-card h3 {
+      margin-top: 0;
+      color: #D459E1;
+      font-size: 18px;
+    }
+    
+    .feature-card p {
+      color: #333;
+      margin: 10px 0;
+      font-weight: 500;
+    }
+    
+    .feature-card small {
+      color: #6c757d;
+      font-size: 12px;
+      font-style: italic;
+    }
+    
+    .prompt-examples {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 30px;
+      margin-top: 20px;
+    }
+    
+    .prompt-category h4 {
+      color: #D459E1;
+      font-size: 16px;
+      margin-bottom: 15px;
+      border-bottom: 2px solid #fcf1fd;
+      padding-bottom: 5px;
+    }
+    
+    .prompt-category ul {
+      list-style: none;
+      padding: 0;
+    }
+    
+    .prompt-category li {
+      background: #fcf1fd;
+      margin: 8px 0;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-style: italic;
+      color: #666;
+      border-left: 3px solid #D459E1;
+    }
+    
+    /* Artify block container */
+    .artify {
+      margin: 20px 0;
+      min-height: 600px;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 8px 32px rgba(212, 89, 225, 0.15);
+    }
+    
+    @media (max-width: 768px) {
+      body {
+        margin: 20px;
+      }
+      
+      h1 {
+        font-size: 2em;
+      }
+      
+      .test-section {
+        padding: 20px;
+      }
+      
+      .feature-grid,
+      .prompt-examples {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+
+  <script type="module">
+    import { loadArea, setConfig } from '../../../libs/utils/utils.js';
+    
+    // Set configuration for testing
+    setConfig({
+      codeRoot: '/libs',
+      locales: { '': { ietf: 'en-US' } },
+      pathname: '/test'
+    });
+
+    // Load the page
+    loadArea();
+
+    // Add helpful console information
+    console.log('%c🎨 Artify AI Image Editor - Updated Test', 'color: #D459E1; font-size: 18px; font-weight: bold;');
+    console.log('%cNew features based on actual React app:', 'color: #6c757d; font-size: 14px;');
+    console.log('✓ Banner landing page with actual banner image');
+    console.log('✓ Material-UI styled navbar with ArtifyDoc filename');
+    console.log('✓ Sidebar with actual effect images (effect1-6.png)');
+    console.log('✓ 800x500 main screen with original/modified toggle');
+    console.log('✓ "Ask Artify" prompt with arrow icon and rounded input');
+    console.log('✓ Complete responsive design matching React app');
+    console.log('');
+    console.log('%cTest all features:', 'color: #333; font-weight: bold;');
+    console.log('1. Upload image → see navbar and editor interface');
+    console.log('2. Click effect thumbnails → see loading and processing');
+    console.log('3. Type AI prompts → test natural language input');
+    console.log('4. Use toggle button → switch original/modified view');
+    console.log('5. Test undo/redo → verify history management');
+    console.log('6. Try download/share → test export functionality');
+  </script>
+</body>
+</html>

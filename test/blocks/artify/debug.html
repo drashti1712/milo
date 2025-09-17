@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Artify Debug - File Upload Issue</title>
+  <link rel="stylesheet" href="../../../libs/styles/styles.css">
+  <link rel="stylesheet" href="../../../libs/blocks/artify/artify.css">
+  <style>
+    body {
+      font-family: 'Adobe Clean', arial, sans-serif;
+      margin: 20px;
+      background: #f8f9fa;
+    }
+    .debug-info {
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      border-left: 4px solid #D459E1;
+    }
+    .debug-info h2 {
+      margin-top: 0;
+      color: #D459E1;
+    }
+    .console-output {
+      background: #1a1a1a;
+      color: #00ff00;
+      padding: 15px;
+      border-radius: 6px;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      max-height: 200px;
+      overflow-y: auto;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="debug-info">
+    <h2>🐛 Artify Debug - File Upload Issue</h2>
+    <p><strong>Problem:</strong> After uploading an image, the editor UI is not visible.</p>
+    <p><strong>Expected:</strong> File upload → Editor interface with image display</p>
+    <p><strong>Actual:</strong> File upload → Nothing visible</p>
+    
+    <h3>Debug Steps:</h3>
+    <ol>
+      <li>Open browser console (F12)</li>
+      <li>Upload an image using the button below</li>
+      <li>Watch console for debug messages</li>
+      <li>Check if state transitions properly</li>
+    </ol>
+
+    <div class="console-output" id="console-log">
+      Console output will appear here...
+    </div>
+  </div>
+
+  <div class="artify">
+    <div>
+      <!-- Artify app will render here -->
+    </div>
+  </div>
+
+  <script type="module">
+    import { loadArea, setConfig } from '../../../libs/utils/utils.js';
+    
+    // Set configuration for testing
+    setConfig({
+      codeRoot: '/libs',
+      locales: { '': { ietf: 'en-US' } },
+      pathname: '/test'
+    });
+
+    // Capture console logs and display them
+    const consoleLog = document.getElementById('console-log');
+    const originalLog = console.log;
+    console.log = function(...args) {
+      originalLog.apply(console, args);
+      const message = args.map(arg => 
+        typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)
+      ).join(' ');
+      consoleLog.innerHTML += message + '\n';
+      consoleLog.scrollTop = consoleLog.scrollHeight;
+    };
+
+    // Load the page
+    loadArea();
+
+    console.log('🎨 Artify Debug Page Loaded');
+    console.log('📝 Instructions: Upload an image and watch console output');
+  </script>
+</body>
+</html>
+

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simple Artify Test</title>
+  <link rel="stylesheet" href="../../../libs/styles/styles.css">
+  <link rel="stylesheet" href="../../../libs/blocks/artify/artify.css">
+  <style>
+    body { font-family: arial; margin: 20px; }
+    .test-section { margin: 20px 0; padding: 20px; background: #f0f0f0; border-radius: 8px; }
+    .debug { background: #003; color: #0f0; padding: 10px; font-family: monospace; font-size: 12px; }
+  </style>
+</head>
+<body>
+  <h1>🧪 Simple Artify Test</h1>
+  
+  <div class="test-section">
+    <h2>Test 1: Basic Artify Block</h2>
+    <div class="artify">
+      <div></div>
+    </div>
+  </div>
+
+  <div class="test-section">
+    <h2>Test 2: Manual State Test</h2>
+    <p>This will manually test the file upload state:</p>
+    <button id="test-upload">Simulate File Upload</button>
+    <div id="state-display" class="debug">State: not started</div>
+  </div>
+
+  <script type="module">
+    import { loadArea, setConfig } from '../../../libs/utils/utils.js';
+    
+    setConfig({
+      codeRoot: '/libs',
+      locales: { '': { ietf: 'en-US' } },
+      pathname: '/test'
+    });
+
+    // Capture all console output
+    const originalLog = console.log;
+    const originalError = console.error;
+    const originalWarn = console.warn;
+    
+    function logToPage(level, ...args) {
+      const message = args.map(arg => 
+        typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)
+      ).join(' ');
+      
+      const logEl = document.createElement('div');
+      logEl.style.cssText = `background: ${level === 'error' ? '#600' : level === 'warn' ? '#660' : '#003'}; color: ${level === 'error' ? '#f99' : level === 'warn' ? '#ff9' : '#0f0'}; padding: 5px; margin: 2px 0; font-family: monospace; font-size: 11px;`;
+      logEl.textContent = `[${level}] ${new Date().toLocaleTimeString()}: ${message}`;
+      document.body.appendChild(logEl);
+    }
+
+    console.log = (...args) => { originalLog(...args); logToPage('log', ...args); };
+    console.error = (...args) => { originalError(...args); logToPage('error', ...args); };
+    console.warn = (...args) => { originalWarn(...args); logToPage('warn', ...args); };
+
+    // Load the artify block
+    console.log('🎨 Loading Artify block...');
+    loadArea();
+
+    // Manual test
+    document.getElementById('test-upload').addEventListener('click', () => {
+      console.log('🧪 Manual test: Simulating file upload');
+      
+      // Create a test file blob
+      const testBlob = new Blob(['test content'], { type: 'image/png' });
+      const testFile = new File([testBlob], 'test-image.png', { type: 'image/png' });
+      
+      console.log('Created test file:', testFile);
+      document.getElementById('state-display').textContent = `State: Created test file ${testFile.name}`;
+    });
+
+    // Check if the artify block loaded properly
+    setTimeout(() => {
+      const artifyBlock = document.querySelector('.artify-block');
+      console.log('Artify block element:', artifyBlock ? 'Found' : 'Not found');
+      
+      const landingPage = document.querySelector('.artify-landing');
+      console.log('Landing page element:', landingPage ? 'Found' : 'Not found');
+      
+      const uploadBtn = document.querySelector('.upload-btn');
+      console.log('Upload button element:', uploadBtn ? 'Found' : 'Not found');
+    }, 1000);
+  </script>
+</body>
+</html>
+
