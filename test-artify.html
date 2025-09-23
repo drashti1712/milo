@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Artify Block Test - New Design</title>
+    <link rel="stylesheet" href="./libs/blocks/artify/artify.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Adobe Clean', adobe-clean, 'Trebuchet MS', sans-serif;
+            background-color: #f8f9fa;
+        }
+        #artify-container {
+            width: 100%;
+            height: 100vh;
+        }
+    </style>
+</head>
+<body>
+    <div id="artify-container"></div>
+    
+    <script type="module">
+        import init from './libs/blocks/artify/artify.js';
+        
+        // Initialize the Artify block with new design
+        const container = document.getElementById('artify-container');
+        init(container);
+        
+        console.log('Artify block initialized with new design!');
+    </script>
+</body>
+</html>
