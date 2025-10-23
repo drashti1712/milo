@@ -253,6 +253,7 @@ function MainContent({
             title=${imageState === 'modified' ? 'Show Original' : 'Show Modified'}
           >
             ${imageState === 'modified' ? '👤' : '✨'}
+            
           </button>
         </div>
       </div>
@@ -270,7 +271,20 @@ function MainContent({
               aria-label="Type your command"
             />
             <button type="submit" class="artify-command-submit" aria-label="send">
-              📤
+               <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="22"
+      height="22"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="#3B63FB"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    >
+      <line x1="22" y1="2" x2="11" y2="13" />
+      <polygon points="22 2 15 22 11 13 2 9 22 2" />
+    </svg>
             </button>
           </form>
         </div>
@@ -293,16 +307,8 @@ function Editor({
 
   return html`
     <div class="artify-editor-wrapper">
-      <${Header} />
       <div class="artify-main">
         <div class="artify-content">
-          <${Sidebar}
-            fileName=${fileName}
-            onFileUrlChange=${onFileUrlChange}
-            onLoadingChange=${onLoadingChange}
-            onImageStateChange=${setImageState}
-            onFileChange=${onFileChange}
-          />
           <${MainContent}
             fileName=${fileName}
             fileUrl=${fileUrl}
