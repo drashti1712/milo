@@ -259,7 +259,7 @@ function MainContent({
       </div>
       
       <div class="artify-command-section">
-        <h3 class="artify-command-title">Ask Artify</h3>
+        <h3 class="artify-command-title">Ask Fluxa</h3>
         <div class="artify-command-container">
           <div class="artify-command-arrow">▶</div>
           <form class="artify-command-form" onSubmit=${(e) => { e.preventDefault(); if (prompt.trim()) handleCommandSubmit(); }}>
