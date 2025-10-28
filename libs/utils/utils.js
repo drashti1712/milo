@@ -1022,6 +1022,7 @@ export function decorateLinks(el) {
     if (a.href.includes(branchQuickLink)) {
       (async () => {
         const { default: processQuickLink } = await import('../features/branch-quick-links/branch-quick-links.js');
+        console.log('Processing Branch quick link for', el);
         processQuickLink(a);
       })();
     }
