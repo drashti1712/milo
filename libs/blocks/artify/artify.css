@@ -6,7 +6,7 @@
   line-height: 1.5;
   font-weight: 400;
   color: #242424;
-  background-color: #9fb2fc;
+  background-color: #050320  ;
   /* height: auto; */
   overflow: hidden;
   padding: 20px;
@@ -523,7 +523,7 @@
 }
 
 .artify-command-submit:hover {
-  background-color: #9fb2fc;
+  background-color: #050320;
 }
 
 .artify-command-submit:hover svg {
@@ -550,7 +550,7 @@
   .artify-image-container {
     width: 600px;
     height: 400px;
-    /* border: 3px solid #9fb2fc; */
+    /* border: 3px solid #050320; */
     /* border-width: 3px; */
   }
   
