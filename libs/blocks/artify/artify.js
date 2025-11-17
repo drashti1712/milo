@@ -231,8 +231,43 @@ function MainContent({
   };
 
   const handleDownloadJSON = () => {
-    // Handle download action JSON
-    // TODO: Implement JSON download functionality
+    // Create sample action JSON
+    const actionData = {
+      action: 'image_transformation',
+      timestamp: new Date().toISOString(),
+      prompt: prompt || 'Transform image',
+      source_image: 'original.jpg',
+      result_image: 'result.jpg',
+      transformation_details: {
+        effect_applied: 'AI Enhancement',
+        processing_time: '1.5s',
+        status: 'completed',
+      },
+      metadata: {
+        tool: 'Artify',
+        version: '1.0.0',
+      },
+    };
+
+    // Convert to JSON string with formatting
+    const jsonString = JSON.stringify(actionData, null, 2);
+
+    // Create a Blob from the JSON string
+    const blob = new Blob([jsonString], { type: 'application/json' });
+
+    // Create a download link
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'action.json';
+
+    // Trigger download
+    document.body.appendChild(link);
+    link.click();
+
+    // Cleanup
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
   };
 
   const handleToggle = () => {
