@@ -209,18 +209,16 @@ function MainContent({
 }) {
   const [prompt, setPrompt] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [modifiedName, setModifiedName] = useState('');
 
   const handleCommandSubmit = async () => {
     setIsLoading(true);
     try {
-      const { modifiedImageUrl, modifiedImagePath } = await processImage(
-        prompt,
-        fileName,
-        modifiedName,
-      );
-      setModifiedName(modifiedImagePath.replace('/', ''));
-      onFileUrlChange(modifiedImageUrl);
+      // Show loader for 1.5 seconds before displaying result.jpg
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+
+      // Replace the image with result.jpg from assets folder
+      const resultImagePath = getAssetPath('result.jpg');
+      onFileUrlChange(resultImagePath);
       onImageStateChange('modified');
       setPrompt('');
     } catch (error) {
@@ -252,16 +250,15 @@ function MainContent({
             onClick=${handleToggle}
             title=${imageState === 'modified' ? 'Show Original' : 'Show Modified'}
           >
-            ${imageState === 'modified' ? '👤' : '✨'}
+            ${imageState === 'modified' ? 'Original' : 'New'}
             
           </button>
         </div>
       </div>
       
       <div class="artify-command-section">
-        <h3 class="artify-command-title">Ask Fluxa</h3>
+        <h3 class="artify-command-title">Enter your prompt or tutorial link:</h3>
         <div class="artify-command-container">
-          <div class="artify-command-arrow">▶</div>
           <form class="artify-command-form" onSubmit=${(e) => { e.preventDefault(); if (prompt.trim()) handleCommandSubmit(); }}>
             <input
               class="artify-command-input"
@@ -277,7 +274,7 @@ function MainContent({
       height="22"
       viewBox="0 0 24 24"
       fill="none"
-      stroke="#3B63FB"
+      stroke="#2A5787"
       stroke-width="2"
       stroke-linecap="round"
       stroke-linejoin="round"
