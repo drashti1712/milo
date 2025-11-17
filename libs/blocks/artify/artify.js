@@ -209,6 +209,7 @@ function MainContent({
 }) {
   const [prompt, setPrompt] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isTransformed, setIsTransformed] = useState(false);
 
   const handleCommandSubmit = async () => {
     setIsLoading(true);
@@ -221,11 +222,17 @@ function MainContent({
       onFileUrlChange(resultImagePath);
       onImageStateChange('modified');
       setPrompt('');
+      setIsTransformed(true);
     } catch (error) {
       // Error processing image
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleDownloadJSON = () => {
+    // Handle download action JSON
+    // TODO: Implement JSON download functionality
   };
 
   const handleToggle = () => {
@@ -250,41 +257,48 @@ function MainContent({
             onClick=${handleToggle}
             title=${imageState === 'modified' ? 'Show Original' : 'Show Modified'}
           >
-            ${imageState === 'modified' ? 'Original' : 'New'}
-            
+            <i class=${imageState === 'modified' ? 'fa-solid fa-rotate-left' : 'fa-jelly fa-regular fa-sparkles'}></i>
           </button>
         </div>
       </div>
       
       <div class="artify-command-section">
-        <h3 class="artify-command-title">Enter your prompt or tutorial link:</h3>
-        <div class="artify-command-container">
-          <form class="artify-command-form" onSubmit=${(e) => { e.preventDefault(); if (prompt.trim()) handleCommandSubmit(); }}>
-            <input
-              class="artify-command-input"
-              value=${prompt}
-              onChange=${(e) => setPrompt(e.target.value)}
-              placeholder="Type your command"
-              aria-label="Type your command"
-            />
-            <button type="submit" class="artify-command-submit" aria-label="send">
-               <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="22"
-      height="22"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="#2A5787"
-      stroke-width="2"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-    >
-      <line x1="22" y1="2" x2="11" y2="13" />
-      <polygon points="22 2 15 22 11 13 2 9 22 2" />
-    </svg>
-            </button>
-          </form>
-        </div>
+        <h3 class="artify-command-title">
+          ${isTransformed ? 'Image transformed successfully!' : 'Enter your prompt or tutorial link:'}
+        </h3>
+        ${isTransformed ? html`
+          <button class="artify-download-json-btn" onClick=${handleDownloadJSON}>
+            Download Action JSON
+          </button>
+        ` : html`
+          <div class="artify-command-container">
+            <form class="artify-command-form" onSubmit=${(e) => { e.preventDefault(); if (prompt.trim()) handleCommandSubmit(); }}>
+              <input
+                class="artify-command-input"
+                value=${prompt}
+                onChange=${(e) => setPrompt(e.target.value)}
+                placeholder="Type your command"
+                aria-label="Type your command"
+              />
+              <button type="submit" class="artify-command-submit" aria-label="send">
+                 <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="22"
+        height="22"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="#2A5787"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <line x1="22" y1="2" x2="11" y2="13" />
+        <polygon points="22 2 15 22 11 13 2 9 22 2" />
+      </svg>
+              </button>
+            </form>
+          </div>
+        `}
       </div>
     </div>
   `;

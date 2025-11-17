@@ -237,6 +237,23 @@
   background: #c026d3;
 }
 
+.artify-download-json-btn {
+  background: #2A5787;
+  color: #FFF;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 8px;
+}
+
+.artify-download-json-btn:hover {
+  background: #1e3f5f;
+}
+
 .artify-icon-button {
   background: none;
   border: none;
@@ -434,21 +451,30 @@
 
 .artify-toggle-button {
   position: absolute;
-  width: 70px;
-  height: 28px;
-  min-height: 24px;
+  width: 44px;
+  height: 44px;
   bottom: 8px;
   right: 8px;
   z-index: 4;
-  background: #2A5787;
+  background: #e0e0e0;
   border: none;
-  border-radius: 8px;
-  color: #e0e0e0;
+  border-radius: 50%;
+  color: #2A5787;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 12px;
+  font-size: 16px;
+  padding: 0;
+  transition: all 0.2s ease;
+}
+
+/* .artify-toggle-button:hover {
+  background: #dcdfe2;
+} */
+
+.artify-toggle-button i {
+  line-height: 1;
 }
 
 .artify-toggle-button:disabled {
