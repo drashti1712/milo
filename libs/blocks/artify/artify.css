@@ -469,9 +469,9 @@
   transition: all 0.2s ease;
 }
 
-/* .artify-toggle-button:hover {
-  background: #dcdfe2;
-} */
+.artify-download-json-btn {
+  display: none;
+}
 
 .artify-toggle-button i {
   line-height: 1;
