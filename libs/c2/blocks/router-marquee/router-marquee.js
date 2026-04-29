@@ -1,5 +1,77 @@
-import { createTag, getFederatedUrl, getFederatedContentRoot } from '../../../utils/utils.js';
+import { sendAnalytics } from '../../../martech/helpers.js';
+import { processTrackingLabels } from '../../../martech/attributes.js';
+import { createTag, getFederatedUrl, getFederatedContentRoot, getConfig } from '../../../utils/utils.js';
 import { getMetadata } from '../section-metadata/section-metadata.js';
+
+let USER_ACTION = false;
+const SLIDE_ANALYTICS = [];
+
+const getViewport = (el) => el.closest('.rm-viewport')?.dataset.viewport;
+const getIndex = (el) => [...el.parentNode.children].indexOf(el);
+
+const fireAnalytic = (card) => {
+  const section = card.parentNode.closest('.section');
+
+  const fireSendAnalytics = () => {
+    const index = getIndex(card);
+    const viewport = getViewport(card);
+    const { label, seen, visible } = SLIDE_ANALYTICS[viewport][index] || {};
+
+    if (seen || !visible) return;
+
+    const analytic = `${USER_ACTION ? 'user' : 'auto'}-slideseen-${index + 1}--${processTrackingLabels(label, getConfig(), 20)}|${section?.getAttribute('daa-lh')}|b${index + 1}`;
+    SLIDE_ANALYTICS[viewport][index].seen = true;
+
+    sendAnalytics(analytic);
+    USER_ACTION = false;
+  };
+
+  if (section?.getAttribute('daa-lh')) fireSendAnalytics();
+  else {
+    const observer = new MutationObserver(() => {
+      if (section?.getAttribute('daa-lh')) {
+        fireSendAnalytics();
+        observer.disconnect();
+      }
+    });
+    observer.observe(section, { attributes: true, attributeFilter: ['daa-lh'] });
+  }
+};
+
+const setSlideObserver = (slides) => {
+  slides.forEach((slide) => {
+    const titleEl = slide.querySelector('.rm-title');
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        const viewport = getViewport(entry.target);
+        const index = getIndex(slide);
+        SLIDE_ANALYTICS[viewport][index].visible = entry.isIntersecting;
+        if (entry.isIntersecting && slide.classList.contains('is-active')) {
+          const card = slide.closest('.rm-viewport').querySelector('.rm-card.is-active');
+          fireAnalytic(card);
+        }
+      });
+    }, { threshold: 1.0 });
+    io.observe(titleEl);
+  });
+};
+
+const setAnalytics = (slides, cards, container, el) => {
+  const config = getConfig();
+  const mepMartech = config?.mep?.martech || '';
+  SLIDE_ANALYTICS[container.dataset.viewport] = {};
+
+  el.setAttribute('data-block-daa-lh', true);
+  slides.forEach((slide, index) => {
+    const label = slide.querySelector('.rm-title')?.textContent;
+    SLIDE_ANALYTICS[container.dataset.viewport][index] = { visible: false, label };
+    slide.setAttribute('daa-lh', `b${index + 1}|rm-slide${mepMartech}`);
+  });
+  cards.querySelectorAll('.rm-card').forEach((card, index) => {
+    const { label } = SLIDE_ANALYTICS[container.dataset.viewport][index];
+    card.setAttribute('daa-ll', `rm-nav-${index + 1}--${processTrackingLabels(label, config, 20)}`);
+  });
+};
 
 const CHEVRON_SVG = '<svg aria-hidden="true" width="5" height="8" viewBox="0 0 5 8" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.75 6.75L3.75 3.75L0.75 0.75" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 const RESET_SVG = '<svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="none"><g clip-path="url(#clip0_3399_7947)"><rect x="0.333984" y="2" width="1" height="8" rx="0.5" fill="white"/><path d="M7.10412 1.28574C7.36448 1.02559 7.78654 1.02546 8.04682 1.28574C8.30711 1.54602 8.30698 1.96808 8.04682 2.22845L4.94201 5.33327H11.3326C11.7008 5.33327 11.9993 5.63174 11.9993 5.99993C11.9993 6.36812 11.7008 6.6666 11.3326 6.6666H4.94201L8.04682 9.77142C8.30698 10.0318 8.30711 10.4538 8.04682 10.7141C7.78654 10.9744 7.36448 10.9743 7.10412 10.7141L2.86128 6.47129C2.60093 6.21094 2.60093 5.78893 2.86128 5.52858L7.10412 1.28574Z" fill="white"/></g><defs><clipPath id="clip0_3399_7947"><rect width="12" height="12" fill="white"/></clipPath></defs></svg>';
@@ -10,10 +82,10 @@ const STAGGER_MS = 1000;
 const STAGGER_BASE = 60;
 const STAGGER_STEP = 20;
 const EASE = 'cubic-bezier(0.42, 0, 0, 1)';
-const RESUME_DELAY = 2000;
 const SWIPE_THRESHOLD = 100;
 
 const prefersReducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const isRtl = () => document.documentElement.dir === 'rtl';
 const reflow = (el) => el?.getBoundingClientRect();
 const getCssPx = (el, prop) => parseFloat(getComputedStyle(el).getPropertyValue(prop)) || 0;
 
@@ -171,7 +243,7 @@ const buildCard = (slide) => {
   const label = icon.nextElementSibling;
   const iconSrc = getFederatedUrl(icon.querySelector('img[src*=".svg"]')?.getAttribute('src'));
   const labelText = label?.textContent.trim();
-  const href = slide.querySelector('.con-button')?.getAttribute('href') || '';
+  const href = label?.querySelector('a')?.getAttribute('href') || '';
   const eyebrowText = slide.querySelector('.rm-eyebrow')?.textContent.trim();
   const ariaLabel = eyebrowText ? `${eyebrowText}, ${labelText}` : labelText;
 
@@ -313,10 +385,8 @@ const startAutoplay = (slides, cards, container, block) => {
   let active = 0; // index of the current active slide
   let timer = null; // timer for the autoplay
   let paused = false; // whether the autoplay is paused
-  let userPaused = false; // whether the user explicitly paused via the play/pause button
   let cleanupTimer = null; // cleanup timer that resets temp inline styles
   let pendingSlide = null; // the slide that is currently transitioning in
-  let leaveTimer = null; // timer for restarting autoplay on block mouse leave
 
   const isMobile = () => !window.matchMedia('(min-width: 1280px)').matches;
   const isDesktopSmallVp = isMobile()
@@ -343,16 +413,18 @@ const startAutoplay = (slides, cards, container, block) => {
     playPauseBtn?.setAttribute('aria-label', isPlaying ? 'Pause' : 'Play');
   };
 
+  const fillOrigin = () => `translateX(${isRtl() ? '101%' : '-101%'})`;
+
   const clearFill = (i) => {
     const bar = bars[i];
     bar.style.transition = 'none';
-    bar.style.transform = 'translateX(-101%)';
+    bar.style.transform = fillOrigin();
   };
 
   const startFill = (i) => {
     const bar = bars[i];
     bar.style.transition = 'none';
-    bar.style.transform = 'translateX(-101%)';
+    bar.style.transform = fillOrigin();
     reflow(bar);
     bar.style.transition = `transform ${AUTOPLAY_MS}ms linear`;
     bar.style.transform = 'translateX(0%)';
@@ -422,16 +494,25 @@ const startAutoplay = (slides, cards, container, block) => {
     requestAnimationFrame(() => dynamicLayoutUpdates(block));
   };
 
+  const preloadNextVideo = () => {
+    const nextIdx = (active + 1) % slides.length;
+    loadVideo(slides[nextIdx]?.querySelector('video'));
+  };
+
   const advance = () => {
+    if (paused) return;
     clearTimeout(timer);
     clearFill(active);
     activate((active + 1) % cardEls.length, 1);
     startFill(active);
     timer = setTimeout(advance, AUTOPLAY_MS);
+    preloadNextVideo();
   };
 
   const pause = () => {
+    if (paused) return;
     clearTimeout(timer);
+    finishSlideTransition();
     clearFill(active);
     paused = true;
     setPlayingState(false);
@@ -439,44 +520,33 @@ const startAutoplay = (slides, cards, container, block) => {
   };
 
   const resume = () => {
+    if (!paused) return;
     paused = false;
-    userPaused = false;
     setPlayingState(true);
     startFill(active);
     timer = setTimeout(advance, AUTOPLAY_MS);
     slides[active]?.querySelector('video')?.play().catch(() => {});
   };
 
-  const cancelLeaveTimer = () => {
-    clearTimeout(leaveTimer);
-    leaveTimer = null;
-  };
-
-  const startLeaveTimer = () => {
-    if (leaveTimer || userPaused) return;
-    leaveTimer = setTimeout(() => {
-      leaveTimer = null;
-      resume();
-    }, RESUME_DELAY);
-  };
-
   const pauseOnInteraction = (e) => {
     const target = e.target.closest('a, button');
     if (target && !target.closest('.rm-pause-play')) {
-      cancelLeaveTimer();
       if (!paused) pause();
     }
   };
 
+  const noHover = () => window.matchMedia('(hover: none)').matches;
+
   cardEls.forEach((card, i) => {
     card.addEventListener('mouseenter', () => {
-      cancelLeaveTimer();
+      if (noHover()) return;
       if (i === active) { pause(); return; }
       clearTimeout(timer);
       clearFill(active);
       paused = true;
       const dir = i > active ? 1 : -1;
       activate(i, dir, { skipTrack: isDesktopSmallVp });
+      USER_ACTION = true;
     });
   });
 
@@ -518,19 +588,12 @@ const startAutoplay = (slides, cards, container, block) => {
 
   container.addEventListener('mouseover', pauseOnInteraction);
   container.addEventListener('focusin', pauseOnInteraction);
-  block.addEventListener('mouseenter', cancelLeaveTimer);
-
-  block.addEventListener('mouseleave', () => {
-    if (paused) startLeaveTimer();
-  });
 
   playPauseBtn?.addEventListener('click', (e) => {
     e.preventDefault();
-    cancelLeaveTimer();
     if (paused) {
       resume();
     } else {
-      userPaused = true;
       pause();
     }
   });
@@ -555,18 +618,25 @@ const startAutoplay = (slides, cards, container, block) => {
     const next = (active + dir + cardEls.length) % cardEls.length;
     activate(next, dir);
     paused = true;
+    USER_ACTION = true;
     setPlayingState(false);
   }, { passive: true });
 
   requestAnimationFrame(() => {
     startFill(active);
     timer = setTimeout(advance, AUTOPLAY_MS);
+    preloadNextVideo();
   });
+
+  return { pause, resume };
 };
 
 const buildViewport = (viewport, slides) => {
   const container = createTag('div', { class: 'rm-viewport', 'data-viewport': viewport });
-  slides.forEach((slide) => decorateSlide(slide));
+  slides.forEach((slide, i) => {
+    decorateSlide(slide);
+    if (i > 0) slide.querySelector('video')?.removeAttribute('poster');
+  });
   slides[0]?.classList.add('is-active');
   setAriaHiddenAndTabIndex(slides);
   const cards = buildCards(slides);
@@ -597,6 +667,7 @@ export default function init(el) {
   const containers = Object.entries(viewports).map(([vp, slides]) => buildViewport(vp, slides));
   el.replaceChildren(...containers);
   const initializedVps = new Set();
+  const autoplayControllers = [];
   const initViewportAutoplay = () => {
     const activeVp = getActiveViewport();
     if (initializedVps.has(activeVp)) return;
@@ -605,7 +676,9 @@ export default function init(el) {
     if (!container) return;
     const slides = container.querySelectorAll('.rm-slide');
     const cards = container.querySelector('.rm-cards');
-    startAutoplay(slides, cards, container, el);
+    setSlideObserver(slides);
+    setAnalytics(slides, cards, container, el);
+    autoplayControllers.push(startAutoplay(slides, cards, container, el));
   };
 
   loadViewportVideos(el);
@@ -616,4 +689,14 @@ export default function init(el) {
     loadViewportVideos(el);
     initViewportAutoplay();
   });
+
+  const nextSection = el.closest('.section')?.nextElementSibling;
+  if (nextSection) {
+    new IntersectionObserver(([entry]) => {
+      const action = entry.isIntersecting ? 'pause' : 'resume';
+      if (entry.isIntersecting || entry.boundingClientRect.top > 0) {
+        autoplayControllers.forEach((ctrl) => ctrl[action]());
+      }
+    }, { rootMargin: '0px 0px -30% 0px' }).observe(nextSection);
+  }
 }
